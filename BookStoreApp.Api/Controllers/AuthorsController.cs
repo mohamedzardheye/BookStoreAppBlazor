@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using BookStoreApp.Api.Data;
 using BookStoreApp.Api.Models.Author;
 using AutoMapper;
+using BookStoreApp.Api.Static;
 
 namespace BookStoreApp.Api.Controllers
 {
@@ -17,35 +18,59 @@ namespace BookStoreApp.Api.Controllers
     {
         private readonly BookStoreDbContext _context;
         private readonly IMapper mapper;
+        private readonly ILogger<AuthorsController> logger;
 
-        public AuthorsController(BookStoreDbContext context, IMapper mapper)
+        public AuthorsController(BookStoreDbContext context, IMapper mapper, ILogger<AuthorsController> logger)
         {
             _context = context;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
         // GET: api/Authors
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AuthorReadOnlyDto>>> GetAuthors()
         {
-            var authors  =   await _context.Authors.ToListAsync(); 
-            var authorDtos = mapper.Map<IEnumerable<AuthorReadOnlyDto>>(authors);
-            return Ok(authorDtos);
+          //  logger.LogInformation($"Request to {nameof(GetAuthors)}");
+            try
+            {
+                var authors = await _context.Authors.ToListAsync();
+                var authorDtos = mapper.Map<IEnumerable<AuthorReadOnlyDto>>(authors);
+                return Ok(authorDtos);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Error Performing Get{nameof(GetAuthors)}");
+                return StatusCode(500, Messages.Error500Message);
+            }
+         
         }
 
         // GET: api/Authors/5
         [HttpGet("{id}")]
         public async Task<ActionResult<AuthorReadOnlyDto>> GetAuthor(int id)
         {
-            var author = await _context.Authors.FindAsync(id);
-
-            if (author == null)
+            try
             {
-                return NotFound();
-            }
-            var authorDto = mapper.Map<AuthorReadOnlyDto>(author);
 
-            return authorDto;
+                var author = await _context.Authors.FindAsync(id);
+
+                if (author == null)
+                {
+                    logger.LogWarning($"Record Not Found : {nameof(GetAuthor)} - Id: {id}");
+                    return NotFound();
+                }
+                var authorDto = mapper.Map<AuthorReadOnlyDto>(author);
+
+                return authorDto;
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Error Performing Get{nameof(GetAuthors)}");
+                return StatusCode(500, Messages.Error500Message);
+            }
+
+           
         }
 
         // PUT: api/Authors/5
@@ -55,6 +80,8 @@ namespace BookStoreApp.Api.Controllers
         {
             if (id != authorDto.Id)
             {
+                logger.LogWarning($"Update Id invalid in: {nameof(PutAuthor)} - Id: {id}");
+
                 return BadRequest();
             }
 
@@ -62,6 +89,8 @@ namespace BookStoreApp.Api.Controllers
 
             if (author == null)
             {
+                logger.LogWarning($"Record Not Found : {nameof(PutAuthor)} - Id: {id}");
+
                 return NotFound();
             }
 
@@ -82,7 +111,8 @@ namespace BookStoreApp.Api.Controllers
                 }
                 else
                 {
-                    throw;
+                    logger.LogError($"Error Performing {nameof(PutAuthor)}");
+                    return StatusCode(500, Messages.Error500Message);
                 }
             }
 
@@ -113,16 +143,28 @@ namespace BookStoreApp.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAuthor(int id)
         {
-            var author = await _context.Authors.FindAsync(id);
-            if (author == null)
+            try
             {
-                return NotFound();
+                var author = await _context.Authors.FindAsync(id);
+                if (author == null)
+                {
+                    logger.LogWarning($"Record Not Found : {nameof(DeleteAuthor)} - Id: {id}");
+
+                    return NotFound();
+                }
+
+                _context.Authors.Remove(author);
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Error Performing Get{nameof(DeleteAuthor)}");
+                return StatusCode(500, Messages.Error500Message);
             }
 
-            _context.Authors.Remove(author);
-            await _context.SaveChangesAsync();
 
-            return NoContent();
         }
 
         private async Task<bool> AuthorExists(int id)
