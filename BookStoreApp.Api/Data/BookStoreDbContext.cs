@@ -6,15 +6,15 @@ namespace BookStoreApp.Api.Data;
 
 public partial class BookStoreDbContext : DbContext
 {
-    public BookStoreDbContext()
-    {
-    }
+ 
+
+ 
+
 
     public BookStoreDbContext(DbContextOptions<BookStoreDbContext> options)
         : base(options)
     {
     }
-
     public virtual DbSet<Author> Authors { get; set; }
 
     public virtual DbSet<Book> Books { get; set; }
