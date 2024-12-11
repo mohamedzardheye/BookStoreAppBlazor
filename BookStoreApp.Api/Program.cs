@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connString = builder.Configuration.GetConnectionString("BookStoreAppDbConnection");
 builder.Services.AddDbContext<BookStoreDbContext>(options => options.UseSqlServer(connString));
 
+
 builder.Services.AddAutoMapper(typeof(MapperConfig));
 
 
