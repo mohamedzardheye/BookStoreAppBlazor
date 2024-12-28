@@ -4,6 +4,7 @@ using BookStoreApp.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStoreApp.Api.Migrations
 {
     [DbContext(typeof(BookStoreDbContext))]
-    partial class BookStoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241228093023_seededUserRoles")]
+    partial class seededUserRoles
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -99,7 +102,7 @@ namespace BookStoreApp.Api.Migrations
                         {
                             Id = "51087778-5248-4439-a7ab-1b19bf48180c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "4308aeaa-ce43-4a34-b3d3-9509f2b36d03",
+                            ConcurrencyStamp = "df54b290-df62-447a-940c-af195289a512",
                             Email = "admin@bookstore.com",
                             EmailConfirmed = false,
                             FirstName = "System",
@@ -107,9 +110,9 @@ namespace BookStoreApp.Api.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@BOOKSTORE.COM",
                             NormalizedUserName = "ADMIN@BOOKSTORE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAEArl6eOCsyILC3V4ZMVuLOhox+aapzTdS4ClFobEyxUxt7yolzzIwVx6HNz2LzO2qQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBsqia1mab6sf4jXWOjcVPuLct/x7jXNod+c2QRNb3ftEALSyizAZYX10nOEDNnGiA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "cc30bf5a-33f6-4195-a417-13b3c498d4e2",
+                            SecurityStamp = "56bab2d1-9c64-4568-967a-eea7c9140153",
                             TwoFactorEnabled = false,
                             UserName = "admin@bookstore.com"
                         },
@@ -117,7 +120,7 @@ namespace BookStoreApp.Api.Migrations
                         {
                             Id = "aed56a54-37fd-4a92-93c1-eb81f4d17d7d",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2b8e173a-a015-4315-96f8-df54f1561fca",
+                            ConcurrencyStamp = "7def65da-c2a2-41f5-8360-df9e31ac4eb5",
                             Email = "user@bookstore.com",
                             EmailConfirmed = false,
                             FirstName = "System",
@@ -125,9 +128,9 @@ namespace BookStoreApp.Api.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@BOOKSTORE.COM",
                             NormalizedUserName = "USER@BOOKSTORE.COM",
-                            PasswordHash = "AQAAAAIAAYagAAAAECsJWIcoGkAHknEmew4/eB8wlFg5qaywmtYquSp27xT3KURwvIOCFIKs0kCSbZGJww==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPr8hX/mEFPnM9e+jch03cKiuiIt9rR7cddS3hU54IbPa163QXvYXl4ZdPCWtPgW1g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e616b869-88f4-4afd-a177-84537403d1e3",
+                            SecurityStamp = "7c94ff28-ab6a-4aee-b917-8710035bed90",
                             TwoFactorEnabled = false,
                             UserName = "user@bookstore.com"
                         });
