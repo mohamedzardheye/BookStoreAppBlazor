@@ -28,6 +28,7 @@ namespace BookStoreApp.Api.Controllers
         {
             try
             {
+                logger.LogInformation($"Registration Attempt for {userDto.Email}");
                 var user = mapper.Map<ApiUser>(userDto);
                 var result = await userManager.CreateAsync(user, userDto.Password);
 
@@ -52,11 +53,43 @@ namespace BookStoreApp.Api.Controllers
 
                
 
-                return Ok();
+                return Accepted();
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, "Error occurred while registering user.");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+        
+        
+        
+        
+        
+        
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login(UserDto loginDto)
+        {
+            try
+            {
+                logger.LogInformation($"Login Attempt for {loginDto.Email}");
+                var user = await userManager.FindByEmailAsync(loginDto.Email);
+                var hashedPassword = await userManager.CheckPasswordAsync(user, loginDto.Password);
+
+                if (user == null || !hashedPassword)
+                {
+                    return Unauthorized("Invalid login attempt.");
+                }
+
+                // Generate token (implementation depends on your token generation logic)
+                var token = "GeneratedToken"; // Placeholder for token generation logic
+
+                return Ok(new { Token = token });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Error occurred while logging in user.");
                 return StatusCode(500, "Internal server error");
             }
         }
