@@ -30,6 +30,7 @@ namespace BookStoreApp.Api.Controllers
             {
                 logger.LogInformation($"Registration Attempt for {userDto.Email}");
                 var user = mapper.Map<ApiUser>(userDto);
+                user.UserName = userDto.Email;
                 var result = await userManager.CreateAsync(user, userDto.Password);
 
                 if (!result.Succeeded)
