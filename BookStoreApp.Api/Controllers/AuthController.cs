@@ -69,7 +69,7 @@ namespace BookStoreApp.Api.Controllers
         
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login(UserDto loginDto)
+        public async Task<IActionResult> Login(LoginUserDto loginDto)
         {
             try
             {
