@@ -1,8 +1,13 @@
 ﻿using AutoMapper;
 using BookStoreApp.Api.Data;
 using BookStoreApp.Api.Models.User;
+using BookStoreApp.Api.Static;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace BookStoreApp.Api.Controllers
 {
@@ -13,12 +18,20 @@ namespace BookStoreApp.Api.Controllers
         private readonly ILogger<AuthController> logger;
         private readonly IMapper mapper;
         private readonly UserManager<ApiUser> userManager;
+        private readonly IConfiguration configuration;
 
-        public AuthController(ILogger<AuthController> logger, IMapper mapper, UserManager<ApiUser> userManager)
+        public AuthController(ILogger<AuthController> 
+            logger, IMapper mapper,
+            UserManager<ApiUser> userManager,
+            IConfiguration configuration
+
+
+            )
         {
             this.logger = logger;
             this.mapper = mapper;
             this.userManager = userManager;
+            this.configuration = configuration;
         }
 
 
@@ -70,23 +83,30 @@ namespace BookStoreApp.Api.Controllers
         
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login(LoginUserDto loginDto)
+        public async Task<ActionResult<AuthResponse>> Login(LoginUserDto loginDto)
         {
             try
             {
                 logger.LogInformation($"Login Attempt for {loginDto.Email}");
                 var user = await userManager.FindByEmailAsync(loginDto.Email);
-                var hashedPassword = await userManager.CheckPasswordAsync(user, loginDto.Password);
+                var validPassword = await userManager.CheckPasswordAsync(user, loginDto.Password);
 
-                if (user == null || !hashedPassword)
+                if (user == null || !validPassword)
                 {
-                    return Unauthorized("Invalid login attempt.");
+                    return Unauthorized("Invalid login attempt." + loginDto);
                 }
 
                 // Generate token (implementation depends on your token generation logic)
-                var token = "GeneratedToken"; // Placeholder for token generation logic
+                string tokenString = await GenerateToken(user); // Placeholder for token generation logic
 
-                return Ok(new { Token = token });
+
+                var response = new AuthResponse
+                {
+                    Token = tokenString,
+                    UserId = user.Id,
+                    Email = loginDto.Email
+                };
+                return response;
             }
             catch (Exception ex)
             {
@@ -95,6 +115,37 @@ namespace BookStoreApp.Api.Controllers
             }
         }
 
+        private async Task<string> GenerateToken(ApiUser user)
+        {
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
+            var roles = await userManager.GetRolesAsync(user);
+            var roleClaims = roles.Select(r => new Claim(ClaimTypes.Role, r)).ToList();
+
+            var userClaims = await userManager.GetClaimsAsync(user);
+
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(CustomClaimTypes.Uid, user.Id)
+            }
+            .Union(userClaims)  
+            .Union(roleClaims);
+
+
+            var  token = new JwtSecurityToken(
+                issuer: configuration["JwtSettings:Issuer"],
+                audience: configuration["JwtSettings:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(Convert.ToInt32(configuration["JwtSettings:Duration"])),
+                signingCredentials: credentials
+            );
+
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
     }
 }
