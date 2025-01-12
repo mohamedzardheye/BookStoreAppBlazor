@@ -1,4 +1,5 @@
 using BookStoreApp.Blazor.Server.Data;
+using BookStoreApp.Blazor.Server.Services.Base;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -9,6 +10,9 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 
+
+
+builder.Services.AddHttpClient<Client,Client>(cl => cl.BaseAddress = new Uri("https://localhost:7039/"));
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
