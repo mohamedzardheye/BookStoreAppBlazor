@@ -1,0 +1,42 @@
+﻿@page "/user/register"
+@using static System.Net.WebRequestMethods
+
+<h3>Register New Account </h3>
+
+<div class="card-body">
+
+    <EditForm Model="@RegistrationModel" OnValidSubmit="HandleRegistration">
+        </EditForm>
+         <DataAnnotationsValidator /> 
+         <ValidationSummary />
+    <div class="form-group">
+        <label for="FirstName">First Name</label>
+        <InputText id="FirstName" class="form-control" @bind-Value="RegistrationModel.FirstName" />
+        <ValidationMessage For="@(() => RegistrationModel.FirstName)" />
+    </div>
+
+        <div class="form-group"> 
+            <label for="UserName">User Name</label> 
+             <InputText id="UserName" class="form-control" @bind-Value="RegistrationModel.Email" />
+             <ValidationMessage For="@(() => RegistrationModel.Email)" />
+        </div>
+     
+</div>
+
+@code {
+
+        UserDto RegistrationModel = new UserDto();
+
+
+
+
+    private async Task  HandleRegistration()
+    {
+
+        // var response = await Http.PostAsJsonAsync("api/user/register", RegistrationModel);
+        // if (response.IsSuccessStatusCode)
+        // {
+        //     NavigationManager.NavigateTo("/user/login");
+        // }
+    }
+}
