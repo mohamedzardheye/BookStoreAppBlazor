@@ -67,7 +67,7 @@
 
     private async Task  HandleRegistration()
     {
-      
+
         try
         {
             await httpClient.RegisterAsync(RegistrationModel);
@@ -83,10 +83,22 @@
             //     Console.WriteLine(error);
             // }
         }
-        catch (Exception ex)
+        catch (ApiException ex)
         {
+            if (ex.StatusCode >= 200 && ex.StatusCode <= 299)
+            {
+                NavigateToLogin();
+                
+            };
             message = ex.Message;
             Console.WriteLine(ex.Message);
         }
+    }
+
+
+
+    private void NavigateToLogin()
+    {
+        navManager.NavigateTo("/user/login");
     }
 }
