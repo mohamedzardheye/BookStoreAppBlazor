@@ -48,7 +48,9 @@ namespace BookStoreApp.Api.Controllers
                 user.UserName = userDto.Email;
                 var result = await userManager.CreateAsync(user, userDto.Password);
 
-                if (!result.Succeeded)
+                Console.WriteLine(result.Succeeded);
+
+                if (result.Succeeded == false)
                 {
                     foreach (var error in result.Errors)
                     {
@@ -57,17 +59,17 @@ namespace BookStoreApp.Api.Controllers
                     return BadRequest(ModelState);
                 }
 
-                if (string.IsNullOrEmpty(userDto.Role))
-                {
-                    userDto.Role = "User"; // Default role
-                }
-                else
-                {
-                    userDto.Role = "Admin"; // Admin role
-                    await userManager.AddToRoleAsync(user, userDto.Role);
-                }
+                //if (string.IsNullOrEmpty(userDto.Role))
+                //{
+                //    userDto.Role = "User"; // Default role
+                //}
+                //else
+                //{
+                //    userDto.Role = "Admin"; // Admin role
+                //   
+                //}
 
-               
+           //     await userManager.AddToRoleAsync(user, userDto.Role);
 
                 return Accepted();
             }

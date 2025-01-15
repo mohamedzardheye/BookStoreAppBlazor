@@ -1,0 +1,61 @@
+﻿@page "/user/login"
+@using static System.Net.WebRequestMethods
+@inject IAuthenticationService authService
+@inject NavigationManager navManager
+
+<h3>Login</h3>
+
+
+<div>
+    <EditForm Model="@LoginModel" OnValidSubmit="HandleLogin">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <InputText id="Email" class="form-control" @bind-Value="LoginModel.Email" />
+            <ValidationMessage For="@(() => LoginModel.Email)" />
+        </div>
+
+        <div class="form-group">
+            <label for="Password">Password</label>
+            <InputText id="Password" type="password" class="form-control" @bind-Value="LoginModel.Password" />
+            <ValidationMessage For="@(() => LoginModel.Password)" />
+
+        </div>
+        <button type="submit" class="btn btn-primary btn-block">Login</button>
+
+
+
+    </EditForm>
+
+</div>
+
+@code {
+    LoginUserDto LoginModel = new LoginUserDto();
+    string message = null;
+
+    public async Task HandleLogin()
+    {
+        try
+        {
+        var response = await authService.AuthenticateAsync(LoginModel);
+       
+            if (response)
+            {
+                navManager.NavigateTo("/");
+            }
+            else
+            {
+               message = "Invalid Creditianls";
+                Console.WriteLine(message);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"An error occurred: {ex.Message}");
+        }
+    }
+
+}
