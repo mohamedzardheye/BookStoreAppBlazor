@@ -85,13 +85,20 @@
         }
         catch (ApiException ex)
         {
+<<<<<<< HEAD
            
+=======
+>>>>>>> 6a75a77ca0fbc089d15fefcd8d30c756dda1d660
             if (ex.StatusCode >= 200 && ex.StatusCode <= 299)
             {
                 NavigateToLogin();
                 
             };
+<<<<<<< HEAD
             message = ex.Response;
+=======
+            message = ex.Message;
+>>>>>>> 6a75a77ca0fbc089d15fefcd8d30c756dda1d660
             Console.WriteLine(ex.Message);
         }
     }
