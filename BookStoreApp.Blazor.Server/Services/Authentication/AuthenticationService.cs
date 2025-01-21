@@ -7,11 +7,11 @@ namespace BookStoreApp.Blazor.Server.Services.Authentication
 {
     public class AuthenticationService : IAuthenticationService
     {
-        private readonly Client httpClient;
+        private readonly IClient httpClient;
         private readonly ILocalStorageService localStorage;
         private readonly AuthenticationStateProvider authenticationStateProvider;
 
-        public AuthenticationService(Client httpClient , 
+        public AuthenticationService(IClient httpClient , 
                                      ILocalStorageService localStorage,
                                      AuthenticationStateProvider authenticationStateProvider)
         {
@@ -32,6 +32,7 @@ namespace BookStoreApp.Blazor.Server.Services.Authentication
             // store Token in LocalStorage
 
             await localStorage.SetItemAsync("accessToken", response.Token);
+            await localStorage.SetItemAsync("userName", response.Email);
 
             //Change auth state of app
             Console.WriteLine(response.Token);

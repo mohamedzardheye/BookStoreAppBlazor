@@ -10,11 +10,11 @@ namespace BookStoreApp.Blazor.Server.Providers
     public class ApiAuthenticationStateProvider : AuthenticationStateProvider
     {
         private readonly ILocalStorageService localStorage;
-        private readonly IClient httpClient;
+        private readonly Client httpClient;
 
 
         private readonly JwtSecurityTokenHandler  jwtSecurityTokenHandler;
-        public ApiAuthenticationStateProvider(ILocalStorageService localStorage, IClient httpClient)
+        public ApiAuthenticationStateProvider(ILocalStorageService localStorage, Client httpClient)
         {
             this.localStorage = localStorage;
             this.httpClient = httpClient;

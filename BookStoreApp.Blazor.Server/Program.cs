@@ -14,8 +14,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddBlazoredLocalStorage();
-builder.Services.AddHttpClient<Client, Client>(cl => cl.BaseAddress = new Uri("https://localhost:7039/"));
-builder.Services.AddScoped<IClient, Client>(); // Register IClient
+builder.Services.AddHttpClient<IClient, Client>(cl => cl.BaseAddress = new Uri("https://localhost:7039"));
+
+builder.Services.AddScoped<Client, Client>(); // Register IClient
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 builder.Services.AddScoped<ApiAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(p =>
