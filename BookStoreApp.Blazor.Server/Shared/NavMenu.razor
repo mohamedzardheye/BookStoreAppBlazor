@@ -1,4 +1,4 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@* <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">BookStoreApp.Blazor.Server</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -70,6 +70,67 @@
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+
+  
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}
+ *@
+
+
+<MudNavMenu Class="mt-1">
+
+
+
+     <AuthorizeView>
+
+            <Authorized>
+
+            <MudNavLink Href="/Authors/" Icon="@Icons.Material.Filled.TaskAlt"> @context.User?.Identity?.Name?.ToString()</MudNavLink>
+
+            <br/>
+
+            <MudNavLink Href="/dashboard" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+
+    <MudNavLink Href="/Authors/index" Icon="@Icons.Material.Filled.TaskAlt">Authors</MudNavLink>
+
+
+
+
+    <MudNavGroup Icon="@Icons.Material.Filled.Logout" Title="Logout">
+        <MudNavLink Href="user/logout">Logout</MudNavLink>
+        </MudNavGroup>
+
+
+          
+        </Authorized>
+      
+
+
+
+            <NotAuthorized>
+            <MudNavLink Href="user/login" Icon="@Icons.Material.Filled.TaskAlt">Login</MudNavLink>
+            <MudNavLink Href="user/register" Icon="@Icons.Material.Filled.TaskAlt">Register</MudNavLink>
+
+
+                </NotAuthorized>
+
+    </AuthorizeView>
+
+    
+</MudNavMenu>
+
+
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+
 
     private void ToggleNavMenu()
     {

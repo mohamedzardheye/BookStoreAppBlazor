@@ -2,11 +2,24 @@
 @using static System.Net.WebRequestMethods
 @inject IAuthenticationService authService
 @inject NavigationManager navManager
+@layout EmptyLayout
+@using System.Text.RegularExpressions
+@using System.ComponentModel.DataAnnotations
+
 
 <h3>Login</h3>
 
 
 <div>
+
+    <MudPaper Height="400px" Width="100%">
+    <MudContainer MaxWidth="MaxWidth.Small">
+
+
+        <MudGrid>
+            <MudItem xs="12" sm="7">
+                <MudPaper Class="pa-4">
+
     <EditForm Model="@LoginModel" OnValidSubmit="HandleLogin">
         <DataAnnotationsValidator />
         <ValidationSummary />
@@ -27,8 +40,15 @@
         <button type="submit" class="btn btn-primary btn-block">Login</button>
 
 
-
     </EditForm>
+
+    </MudPaper>
+    </MudItem>
+    </MudGrid>
+              
+
+    </MudContainer>
+    </MudPaper>
 
 </div>
 
@@ -46,7 +66,7 @@
        
             if (response)
             {
-                navManager.NavigateTo("/");
+                navManager.NavigateTo("/dashboard");
             }
             else
             {

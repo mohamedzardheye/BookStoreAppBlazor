@@ -1,11 +1,13 @@
 
 using Blazored.LocalStorage;
 using BookStoreApp.Blazor.Server.Providers;
+using BookStoreApp.Blazor.Server.Services;
 using BookStoreApp.Blazor.Server.Services.Authentication;
 using BookStoreApp.Blazor.Server.Services.Base;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
+using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,9 +20,16 @@ builder.Services.AddHttpClient<IClient, Client>(cl => cl.BaseAddress = new Uri("
 
 builder.Services.AddScoped<Client, Client>(); // Register IClient
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+builder.Services.AddScoped<IAuthorService, AuthorService>();
 builder.Services.AddScoped<ApiAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(p =>
                                                         p.GetRequiredService<ApiAuthenticationStateProvider>());
+
+
+
+builder.Services.AddMudServices();
+
 var app = builder.Build();
 //
 // Add services to the container.

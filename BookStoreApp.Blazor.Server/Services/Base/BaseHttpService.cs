@@ -6,9 +6,9 @@ namespace BookStoreApp.Blazor.Server.Services.Base
 {
     public class BaseHttpService
     {
-        private readonly Client client;
+        private readonly IClient client;
         private readonly ILocalStorageService localStorage;
-        public BaseHttpService(Client client, ILocalStorageService localStorage)
+        public BaseHttpService(IClient client, ILocalStorageService localStorage)
         {
             this.client = client;
             this.localStorage = localStorage;
@@ -47,7 +47,7 @@ namespace BookStoreApp.Blazor.Server.Services.Base
             var token = await localStorage.GetItemAsync<string>("accessToken");
             if(token != null)
             {
-             //  client.httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+              client.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
         }
     }
