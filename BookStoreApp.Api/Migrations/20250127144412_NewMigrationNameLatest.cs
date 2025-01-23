@@ -3,12 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace BookStoreApp.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class seededUserRoles : Migration
+    public partial class NewMigrationNameLatest : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -197,33 +195,6 @@ namespace BookStoreApp.Api.Migrations
                         column: x => x.AuthorId,
                         principalTable: "Authors",
                         principalColumn: "Id");
-                });
-
-            migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[,]
-                {
-                    { "9cac6922-ba24-400c-80ee-c4e941159a0b", null, "User", "USER" },
-                    { "cd2e52c4-4e26-48b6-9d23-ac77456d91f8", null, "Admin", "ADMIN" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[,]
-                {
-                    { "51087778-5248-4439-a7ab-1b19bf48180c", 0, "df54b290-df62-447a-940c-af195289a512", "admin@bookstore.com", false, "System", "Admin", false, null, "ADMIN@BOOKSTORE.COM", "ADMIN@BOOKSTORE.COM", "AQAAAAIAAYagAAAAEBsqia1mab6sf4jXWOjcVPuLct/x7jXNod+c2QRNb3ftEALSyizAZYX10nOEDNnGiA==", null, false, "56bab2d1-9c64-4568-967a-eea7c9140153", false, "admin@bookstore.com" },
-                    { "aed56a54-37fd-4a92-93c1-eb81f4d17d7d", 0, "7def65da-c2a2-41f5-8360-df9e31ac4eb5", "user@bookstore.com", false, "System", "User", false, null, "USER@BOOKSTORE.COM", "USER@BOOKSTORE.COM", "AQAAAAIAAYagAAAAEPr8hX/mEFPnM9e+jch03cKiuiIt9rR7cddS3hU54IbPa163QXvYXl4ZdPCWtPgW1g==", null, false, "7c94ff28-ab6a-4aee-b917-8710035bed90", false, "user@bookstore.com" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "AspNetUserRoles",
-                columns: new[] { "RoleId", "UserId" },
-                values: new object[,]
-                {
-                    { "cd2e52c4-4e26-48b6-9d23-ac77456d91f8", "51087778-5248-4439-a7ab-1b19bf48180c" },
-                    { "9cac6922-ba24-400c-80ee-c4e941159a0b", "aed56a54-37fd-4a92-93c1-eb81f4d17d7d" }
                 });
 
             migrationBuilder.CreateIndex(

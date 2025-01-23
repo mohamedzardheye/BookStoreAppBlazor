@@ -26,6 +26,9 @@
 
 		<!-- ROW-1 -->
 		<div class="row">
+
+
+
 			<div class="col-lg-6 col-sm-12 col-md-6 col-xl-3">
 				<div class="card overflow-hidden">
 					<div class="card-body">
@@ -50,6 +53,11 @@
 					</div>
 				</div>
 			</div>
+
+
+
+
+
 			<div class="col-lg-6 col-sm-12 col-md-6 col-xl-3">
 				<div class="card overflow-hidden">
 					<div class="card-body">
@@ -74,6 +82,10 @@
 					</div>
 				</div>
 			</div>
+
+
+
+
 			<div class="col-lg-6 col-sm-12 col-md-6 col-xl-3">
 				<div class="card overflow-hidden">
 					<div class="card-body">
@@ -98,6 +110,12 @@
 					</div>
 				</div>
 			</div>
+
+
+
+
+
+
 			<div class="col-lg-6 col-sm-12 col-md-6 col-xl-3">
 				<div class="card overflow-hidden">
 					<div class="card-body">
@@ -122,8 +140,103 @@
 					</div>
 				</div>
 			</div>
-		</div>
+
+
+
+
+			</div>
+
+
+
+			<!---   ->
+
+
+
+                        <div class="row">
+
+							<div class="col-lg-4 col-sm-12 col-md-6 col-xl-3">
+								<MudChart ChartType="ChartType.Donut" Width="300px" Height="300px" InputData="@data" InputLabels="@labels">
+							<CustomGraphics>
+								<text class="donut-inner-text" x="47%" y="35%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Total</text>
+								<text class="donut-inner-text" x="47%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@data.Sum().ToString()</text>
+							</CustomGraphics>
+						</MudChart>
+						</div>
+
+							<div class="col-sm-1"></div>
+
+
+							<div class="col-lg-4 col-sm-12 col-md-6 col-xl-3">
+							<MudChart ChartType="ChartType.StackedBar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
+							</div>
+
+
+								<div class="col-sm-1"></div>
+								<div class="col-lg-4 col-sm-12 col-md-6 col-xl-3">
+							<MudChart ChartType="ChartType.Line" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
+						</div>
+
+
+
+
+
+                        <div class="row">
+
+						
+							<div class="col-lg-4 col-sm-12 col-md-6 col-xl-3">
+							<MudChart ChartType="ChartType.Bar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
+							</div>
+
+
+								<div class="col-sm-1"></div>
+
+						<div class="col-lg-4 col-sm-12 col-md-6 col-xl-3">
+									<MudChart ChartType="ChartType.Donut" Width="300px" Height="300px" InputData="@data" InputLabels="@labels">
+							<CustomGraphics>
+								<text class="donut-inner-text" x="47%" y="35%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Total</text>
+								<text class="donut-inner-text" x="47%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@data.Sum().ToString()</text>
+							</CustomGraphics>
+						</MudChart>
+
+						</div>
+
+
+
+
+
+							<div class="col-sm-1"></div>
+
+						
+
+
+
+							<div class="col-lg-4 col-sm-12 col-md-6 col-xl-3">
+							<MudChart ChartType="ChartType.Bar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
+							</div>
+
+
+								
+							
+					
+
+
+
+
+
+							</div>
+
+
+
+							</div>
+
+
+
+			<!---  ->
+		
 		<!-- ROW-1 END-->
+
+
+
 
 
 
@@ -133,5 +246,23 @@
 						</div>
 
 @code {
+	private int Index = -1; //default value cannot be 0 -> first selectedindex is 0.
 
-}
+	public List<ChartSeries> Series = new List<ChartSeries>()
+	{
+	new ChartSeries() { Name = "Hargeisa", Data = new double[] { 40, 20, 25, 27, 46, 60, 48, 80, 15 } },
+	new ChartSeries() { Name = "Burco", Data = new double[] { 19, 24, 35, 13, 28, 15, 13, 16, 31 } },
+	new ChartSeries() { Name = "Borama", Data = new double[] { 8, 6, 11, 13, 4, 16, 10, 16, 18 } },
+	};
+	public string[] XAxisLabels = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep" };
+
+
+
+
+	 public double[] data = { 25, 77, 28, 5 };
+    public string[] labels = { "Oil", "Coal", "Gas", "Biomass" };
+
+
+
+
+	}
