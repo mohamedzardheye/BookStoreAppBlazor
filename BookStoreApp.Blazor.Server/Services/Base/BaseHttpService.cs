@@ -32,9 +32,15 @@ namespace BookStoreApp.Blazor.Server.Services.Base
 
             }
 
+            if (apiException.StatusCode >= 200 && apiException.StatusCode <= 299) 
+            {
+                return new Response<Guid>() { Message = "Success Operation",    Success = true };
+
+            }
 
 
-            return new Response<Guid>() { Message = "An unhandled error occured", ValidationErrors = apiException.Response, Success = false };
+
+                return new Response<Guid>() { Message = "An unhandled error occured", ValidationErrors = apiException.Response, Success = false };
 
 
         }

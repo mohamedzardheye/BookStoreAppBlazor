@@ -1,7 +1,7 @@
 ﻿@page "/authors/index"
 @inject IAuthorService authorService;
 
-
+@inject NavigationManager navManager
 
 
 
@@ -41,7 +41,7 @@ else
                               Variant="Variant.Filled"
                               EndIcon="@Icons.Material.Filled.Add"
                               Class="align-content-lg-end"
-                              
+                            OnClick="goToAddAuthor"
                                Size="Size.Large"
                               Color="Color.Primary">
                               Add New Author
@@ -74,8 +74,8 @@ else
 
             <RowTemplate>
               
-                <MudTd DataLabel="firstName">@context.FirstName</MudTd>
-                <MudTd DataLabel="Name">@context.LastName</MudTd>
+                    <MudTd DataLabel="firstName">@context.FirstName</MudTd>
+                    <MudTd DataLabel="lastName">@context.LastName</MudTd>
              
                 <MudTd DataLabel="Actions">
                     <MudIconButton Icon="@Icons.Material.Filled.Delete"
@@ -165,5 +165,22 @@ else
             Authors = response.data;
         }
     }
+
+
+
+
+
+
+
+
+
+
+
+
+    async Task goToAddAuthor()
+    {
+        navManager.NavigateTo("/authors/create");
+    }
+
 
 }
