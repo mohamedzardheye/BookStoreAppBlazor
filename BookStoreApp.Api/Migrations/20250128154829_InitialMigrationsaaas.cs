@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BookStoreApp.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class NewMigrationNameLatest : Migration
+    public partial class InitialMigrationsaaas : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

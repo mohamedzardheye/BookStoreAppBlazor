@@ -28,12 +28,12 @@ namespace BookStoreApp.Api.Controllers
             this.mapper = mapper;
             this.logger = logger;
         }
-
+        //  logger.LogInformation($"Request to {nameof(GetAuthors)}");
         // GET: api/Authors
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AuthorReadOnlyDto>>> GetAuthors()
         {
-          //  logger.LogInformation($"Request to {nameof(GetAuthors)}");
+         
             try
             {
                 var authors = await _context.Authors.ToListAsync();

@@ -10,90 +10,175 @@
     <div class="alert alert-danger">
         <p><em>@response.Message</em></p>
     </div>
-   
+
 }
 
-@if(Authors == null){
-    <p><em>Loading Data...</em></p>
-}
-else
-{
 
-
-    
-  <div class="side-app">
-					 <!-- CONTAINER -->
-					 <div class="main-container container-fluid">
-						<!-- PAGE-HEADER -->
-						<div class="page-header">
-						
-							<div class="ms-auto pageheader-btn">
-								<ol class="breadcrumb">
-									<li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
-									<li class="breadcrumb-item active" aria-current="page">Areas</li>
-								</ol>
-							</div>
-						</div>
-
-                        <div class="col-offset-10 col-md-2 mb-3">
-									<div class="btn-list">
-                          <MudButton 
-                              Variant="Variant.Filled"
-                              EndIcon="@Icons.Material.Filled.Add"
-                              Class="align-content-lg-end"
-                            OnClick="goToAddAuthor"
-                               Size="Size.Large"
-                              Color="Color.Primary">
-                              Add New Author
-                          </MudButton>
-
-
-										
-									</div>
-								</div>
-						<!-- PAGE-HEADER END -->
-        <MudTable  Items="@Authors" Dense="true" Hover="@hover" Bordered="@bordered" Striped="@striped"
-            @bind-SelectedItem="selectedItem1">
-
-            <ToolBarContent>
-                <MudText Typo="Typo.h6">Areas</MudText>
-                <MudSpacer />
-
-                <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start"
-                    AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+<div class="side-app">
+    <!-- CONTAINER -->
+    <div class="main-container container-fluid">
+        <!-- PAGE-HEADER -->
 
 
 
-            </ToolBarContent>
-            <HeaderContent>
-                <MudTh>First Name</MudTh>
-                <MudTh>Last Name </MudTh>
-                <MudTh>Action</MudTh>
-           
-            </HeaderContent>
+        <div class="page-header">
 
-            <RowTemplate>
-              
+            <div class="ms-auto pageheader-btn">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Areas</li>
+                </ol>
+            </div>
+        </div>
+
+
+        <div class="col-offset-10 col-md-2 mb-3">
+            <div class="btn-list">
+                <MudButton Variant="Variant.Filled"
+                           EndIcon="@Icons.Material.Filled.Add"
+                           Class="align-content-lg-end"
+                           OnClick="goToAddAuthor"
+                           Size="Size.Large"
+                           Color="Color.Primary">
+                    Add New Author
+                </MudButton>
+
+
+
+            </div>
+        </div>
+
+
+
+
+
+    <!--start searcj b;pcl-->
+
+        <div class="card mt-3 border-0">
+            <div class="card-body">
+
+
+
+                <div class="row g-2">
+                    <div class="col-md-2">
+                        <MudTextField @bind-Value="TextValue" Label="First Name" Variant="Variant.Outlined"></MudTextField>
+
+                    </div>
+
+                    <div class="col-md-2">
+                        <MudTextField @bind-Value="TextValue" Label="Last Name" Variant="Variant.Outlined"></MudTextField>
+
+                    </div>
+
+
+                    <div class="col-md-2">
+                        <MudTextField @bind-Value="TextValue" Label="Outlined" Variant="Variant.Outlined"></MudTextField>
+
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="search-box">
+                            <MudDatePicker Label="Date From" Variant="Variant.Outlined" />
+
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+
+                        <MudDatePicker Label="Date To" Variant="Variant.Outlined" />
+
+                    </div>
+
+
+                    <div class="col-md-2">
+                        <p />
+
+                        <MudButton Color="Color.Inherit" Size="Size.Large" ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Filled.Search" Style="background-color:green;color:white;">
+                            Filter
+                        </MudButton>
+
+                        <MudButton Color="Color.Inherit" Size="Size.Large" ButtonType="ButtonType.Reset" StartIcon="@Icons.Material.Filled.LockReset" Style="background-color:red;color:white;">
+                            Reset
+                        </MudButton>
+
+                    </div>
+
+
+
+                    <!--end col-->
+                    <div class="col-md-2 mt-2">
+                        <div>
+                        </div>
+                    </div>
+                    <!--end col-->
+                </div>
+                <!--end row-->
+
+            </div>
+        </div>
+
+
+    <!-- end container flue-->
+
+        @if (Authors == null)
+        {
+            <Loading />
+
+
+        }
+
+        else
+        {
+
+
+
+
+
+
+            <!-- PAGE-HEADER END -->
+            <MudTable Items="@Authors"
+                      Dense="true"
+                      Hover="@hover"
+                      SortLabel="Sort By"
+                      Bordered="@bordered" Striped="@striped"
+                      @bind-SelectedItem="selectedItem1">
+
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Areas</MudText>
+                    <MudSpacer />
+
+                    <MudTextField @bind-Value="searchString1" Placeholder="Search" Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+
+
+
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh>First Name</MudTh>
+                    <MudTh>Last Name </MudTh>
+                    <MudTh>Action</MudTh>
+
+                </HeaderContent>
+
+                <RowTemplate>
+
                     <MudTd DataLabel="firstName">@context.FirstName</MudTd>
                     <MudTd DataLabel="lastName">@context.LastName</MudTd>
-             
-                <MudTd DataLabel="Actions">
-                    <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                        Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" />
-                    <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                        Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
 
-                </MudTd>
-            </RowTemplate>
-            <PagerContent>
-                <MudTablePager />
-            </PagerContent>
-        </MudTable>
+                    <MudTd DataLabel="Actions">
+
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                       Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" />
 
 
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                                       Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
 
-
-
+                    </MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[] { 30, 40, 50, 100 }" />
+                </PagerContent>
+            </MudTable>
 
 
 
@@ -102,32 +187,18 @@ else
 
 
 
+        }
+
+        </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-    </div>
 </div>
 
 
 
-
-   
-}
-
 @code {
 
-      private bool _error;
+    private bool _error;
     private bool _completed;
     private bool _disabled;
 
@@ -149,18 +220,19 @@ else
 
 
 
+    public string TextValue { get; set; }
 
 
 
 
     private List<AuthorReadOnlyDto> Authors;
 
-    private Response<List<AuthorReadOnlyDto>> response = new Response<List<AuthorReadOnlyDto>> {Success = true};
+    private Response<List<AuthorReadOnlyDto>> response = new Response<List<AuthorReadOnlyDto>> { Success = true };
 
     protected override async Task OnInitializedAsync()
     {
-         response = await authorService.GetAuthors();
-        if(response.Success)
+        response = await authorService.GetAuthors();
+        if (response.Success)
         {
             Authors = response.data;
         }
@@ -169,7 +241,9 @@ else
 
 
 
-
+    private async Task HandleCreateAuthor()
+    {
+    }
 
 
 

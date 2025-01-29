@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStoreApp.Api.Migrations
 {
     [DbContext(typeof(BookStoreDbContext))]
-    [Migration("20250127144506_NewMigrationNameLatestO")]
-    partial class NewMigrationNameLatestO
+    [Migration("20250128154829_InitialMigrationsaaas")]
+    partial class InitialMigrationsaaas
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
