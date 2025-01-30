@@ -1,0 +1,133 @@
+﻿<MudDialog>
+    <TitleContent>
+        Dialog Title
+    </TitleContent>
+    <DialogContent>
+        <EditForm Model="Author" OnValidSubmit="HandleCreateAuthor">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+
+
+
+
+            <div class="form-group">
+
+
+                <div class="form-group">
+                    <label for="LastName">First Name</label>
+                    <InputText id="LastName" class="form-control" @bind-Value="Author.FirstName" />
+                    <ValidationMessage For="@(() => Author.FirstName)" />
+                </div>
+
+
+                <div class="form-group">
+                    <label for="LastName">First Name</label>
+                    <InputText id="LastName" class="form-control" @bind-Value="Author.LastName" />
+                    <ValidationMessage For="@(() => Author.LastName)" />
+                </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                <div class="form-group">
+                    <label for="LastName">Bio</label>
+                    <InputText id="Bio" class="form-control" @bind-Value="Author.Bio" />
+                    <ValidationMessage For="@(() => Author.Bio)" />
+                </div>
+
+
+
+
+
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+
+        </EditForm>
+
+        @if (showLeaveAlert)
+        {
+            <MudAlert Severity="Severity.Info" ContentAlignment="HorizontalAlignment.Center" ShowCloseIcon="true" >Time to leave. Please close me!</MudAlert>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@inject IAuthorService authorService
+@inject NavigationManager navManager
+
+@inject ISnackbar Snackbar
+
+
+
+@code {
+
+    private bool showLeaveAlert = false;
+
+    [Parameter]
+    public EventCallback Authors { get; set; }
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    private void Cancel() => MudDialog.Cancel();
+
+
+
+    private AuthorCreateDto Author = new AuthorCreateDto();
+
+    private async Task HandleCreateAuthor()
+    {
+        var response = await authorService.CreateAuthor(Author);
+        if (response.Success)
+        {
+
+            SnackMessage("Succesfully Saved Record", Severity.Success);
+            Cancel();
+           
+
+          
+
+            await Authors.InvokeAsync();
+
+            navManager.NavigateTo("/authors/index");
+            
+
+        }
+
+
+      
+    }
+
+
+
+    private void SnackMessage(string text, Severity type)
+    {
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopRight;
+        Snackbar.Add(text, type);
+    }
+
+    async Task goToListAuthors()
+    {
+         navManager.NavigateTo("/authors/search");
+    }
+
+    // end all 
+}

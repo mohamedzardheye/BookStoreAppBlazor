@@ -58,19 +58,20 @@
 
 </EditForm>
 @code {
+  
 
     private AuthorCreateDto Author = new AuthorCreateDto();
 
     private async Task HandleCreateAuthor()
     {
-        var response  =  await authorService.CreateAuthor(Author);
+        var response = await authorService.CreateAuthor(Author);
         if (response.Success)
         {
-           
-        //    navManager.NavigateTo("/authors/index");
+
+            //    navManager.NavigateTo("/authors/index");
         }
-        
-      
+
+
         // await authorService.createAuthor(Author);
         // NavigationManager.NavigateTo("/authors");
     }

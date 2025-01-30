@@ -10,12 +10,18 @@ using BookStoreApp.Api.Models.Author;
 using AutoMapper;
 using BookStoreApp.Api.Static;
 using Microsoft.AspNetCore.Authorization;
+using BookStoreApp.Api.Models;
+using BookStoreApp.Api.Helpers;
+using AutoMapper.QueryableExtensions;
+
 
 namespace BookStoreApp.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
+    //[AllowAnonymous]
+   
     public class AuthorsController : ControllerBase
     {
         private readonly BookStoreDbContext _context;
@@ -36,7 +42,7 @@ namespace BookStoreApp.Api.Controllers
          
             try
             {
-                var authors = await _context.Authors.ToListAsync();
+                var authors = await _context.Authors.OrderByDescending(x=>x.Id).ToListAsync();
                 var authorDtos = mapper.Map<IEnumerable<AuthorReadOnlyDto>>(authors);
                 return Ok(authorDtos);
             }
@@ -48,6 +54,77 @@ namespace BookStoreApp.Api.Controllers
          
         }
 
+        //public async Task<List<AuthorReadOnlyDto>> SearchAuthor(AuthorFilterDto search)
+        //{
+        //    try
+        //    {
+        //        var queryable = _context.Authors.ProjectTo<AuthorReadOnlyDto>(mapper.ConfigurationProvider).AsQueryable();
+
+
+
+
+        //        if (search.Name != null)
+        //        {
+        //            queryable = queryable.Where(x => x.FirstName.Contains(search.Name));
+
+        //        }
+        //        await HttpContext.InsertPaginationParameterInResponse(queryable, search.QuantityPerPage);
+
+
+        //        var authors = await queryable.Paginate(search).ToListAsync();
+
+
+        //        return authors;
+
+
+
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        logger.LogError(ex, $"Error Performing Get{nameof(GetAuthors)}");
+        //        return null;
+        //    }
+        //}
+
+         [HttpGet("search")]
+        public async Task<ActionResult<IEnumerable<AuthorReadOnlyDto>>> Get([FromQuery] AuthorFilterDto pagination )
+        {
+
+
+            try
+            {
+                var queryable = _context.Authors.AsQueryable(); 
+         
+
+
+
+
+                if (pagination.FirstName != null)
+                {
+                    queryable = queryable.Where(x => x.FirstName.Contains(pagination.FirstName));
+
+                }
+                if (pagination.LastName != null)
+                {
+                    queryable = queryable.Where(x => x.LastName.Contains(pagination.LastName));
+                }
+
+                queryable = queryable.OrderByDescending(x => x.Id);
+
+                await HttpContext.InsertPaginationParameterInResponse(queryable, pagination.QuantityPerPage);
+                var authors = await queryable.Paginate(pagination).ToListAsync();
+               
+
+                var authorDto = mapper.Map<IEnumerable<AuthorReadOnlyDto>>(authors);
+                return Ok(authorDto);
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, $"Error Performing Get{nameof(GetAuthors)}");
+                return StatusCode(500, Messages.Error500Message);
+            }
+        }
         // GET: api/Authors/5
         [HttpGet("{id}")]
         public async Task<ActionResult<AuthorReadOnlyDto>> GetAuthor(int id)

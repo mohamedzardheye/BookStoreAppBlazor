@@ -2,7 +2,7 @@
 
 namespace BookStoreApp.Api.Models.Author
 {
-    public class AuthorReadOnlyDto : BaseDto
+    public class AuthorReadOnlyDto 
     {
 
         [Required]

@@ -1,10 +1,12 @@
-﻿@page "/authors/index"
+﻿@page "/authors/search"
 @inject IAuthorService authorService;
 
 @inject NavigationManager navManager
 
-@inject IDialogService DialogService
 
+
+@inject HttpClient http
+@inject IJSRuntime js
 
 @if (response.Success == false)
 {
@@ -32,13 +34,13 @@
             </div>
         </div>
 
-        <!-- button to new author-->
+
         <div class="col-offset-10 col-md-2 mb-3">
             <div class="btn-list">
                 <MudButton Variant="Variant.Filled"
                 EndIcon="@Icons.Material.Filled.Add"
                 Class="align-content-lg-end"
-                OnClick="@(() => OpenDialogAsync(_maxWidth))"
+                OnClick="goToAddAuthor"
                 Size="Size.Large"
                 Color="Color.Primary">
                     Add New Author
@@ -53,66 +55,67 @@
 
 
 
-
         <!--start searcj b;pcl-->
 
         <div class="card mt-3 border-0">
             <div class="card-body">
 
 
+                <EditForm Model="authorFilterDto" OnValidSubmit="handleSubmit">
+                    <DataAnnotationsValidator />
+                    <ValidationSummary />
 
-                <div class="row g-2">
-                    <div class="col-md-2">
-                        <MudTextField @bind-Value="TextValue" Label="First Name" Variant="Variant.Outlined"></MudTextField>
-
-                    </div>
-
-                    <div class="col-md-2">
-                        <MudTextField @bind-Value="TextValue" Label="Last Name" Variant="Variant.Outlined"></MudTextField>
-
-                    </div>
-
-
-                    <div class="col-md-2">
-                        <MudTextField @bind-Value="TextValue" Label="Outlined" Variant="Variant.Outlined"></MudTextField>
-
-                    </div>
-
-                    <div class="col-md-2">
-                        <div class="search-box">
-                            <MudDatePicker Label="Date From" Variant="Variant.Outlined" />
+                    <div class="row g-2">
+                        <div class="col-md-2">
+                            <MudTextField Label="First Name" Variant="Variant.Outlined" @bind-Value="authorFilterDto.FirstName"
+                            For="@(() => authorFilterDto.FirstName)" />
 
                         </div>
-                    </div>
-                    <div class="col-md-2">
 
-                        <MudDatePicker Label="Date To" Variant="Variant.Outlined" />
+                        <div class="col-md-2">
+                            <MudTextField Label="Last Name" Variant="Variant.Outlined" @bind-Value="authorFilterDto.LastName"
+                                          For="@(() => authorFilterDto.LastName)" />
+                            @*   <MudTextField @bind-Value="TextValue" Label="Last Name" Variant="Variant.Outlined"></MudTextField> *@
 
-                    </div>
-
-
-                    <div class="col-md-2">
-                        <p />
-
-                        <MudButton Color="Color.Inherit" Size="Size.Large" ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Filled.Search" Style="background-color:green;color:white;">
-                            Filter
-                        </MudButton>
-
-                        <MudButton Color="Color.Inherit" Size="Size.Large" ButtonType="ButtonType.Reset" StartIcon="@Icons.Material.Filled.LockReset" Style="background-color:red;color:white;">
-                            Reset
-                        </MudButton>
-
-                    </div>
-
-
-
-                    <!--end col-->
-                    <div class="col-md-2 mt-2">
-                        <div>
                         </div>
+
+
+                        <div class="col-md-2">
+                            @*  <MudTextField @bind-Value="TextValue" Label="Outlined" Variant="Variant.Outlined"></MudTextField> *@
+
+                        </div>
+
+                        <div class="col-md-2">
+                            <div class="search-box">
+                                @* <MudDatePicker Label="Date From" Variant="Variant.Outlined" /> *@
+
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+
+                            @* <MudDatePicker Label="Date To" Variant="Variant.Outlined" /> *@
+
+                        </div>
+
+
+                        <div class="col-md-2">
+                            <p />
+
+                            <MudButton Color="Color.Inherit" Size="Size.Large" ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Filled.Search" Style="background-color:green;color:white;">
+                                Filter
+                            </MudButton>
+
+                            <MudButton Color="Color.Inherit" Size="Size.Large"   StartIcon="@Icons.Material.Filled.LockReset" Style="background-color:red;color:white;">
+                                Export
+                            </MudButton>
+
+                        </div>
+
+
+
+
                     </div>
-                    <!--end col-->
-                </div>
+                </EditForm>
                 <!--end row-->
 
             </div>
@@ -123,7 +126,7 @@
 
 
 
-        @if (Authors == null)
+        @if (loading == true)
         {
             <Loading />
 
@@ -143,8 +146,7 @@
             Dense="true"
             Hover="@hover"
             SortLabel="Sort By"
-            Bordered="@bordered" Striped="@striped"
-            >
+            Bordered="@bordered" Striped="@striped">
 
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">Areas</MudText>
@@ -179,7 +181,9 @@
                     </MudTd>
                 </RowTemplate>
                 <PagerContent>
-                    <MudTablePager PageSizeOptions="new int[] { 30, 40, 50, 100 }" />
+
+                    <Pagination TotaPagesQuantity="totalPageQuantity" CurrentPage="currentPage" Radius="2"
+                    SelectedPage="SelectedPage"></Pagination>
                 </PagerContent>
             </MudTable>
 
@@ -216,64 +220,64 @@
 
 
 
-    private int totalPageQuantity;
+    private int totalPageQuantity = 10;
     private int currentPage = 1;
     private string nameFilter = string.Empty;
+
+
 
 
     private async Task SelectedPage(int page)
     {
         currentPage = page;
-
+        await loadAuthors(page);
     }
 
 
 
-    public string TextValue { get; set; }
 
-
-
+    private AuthorFilterDto authorFilterDto = new AuthorFilterDto();
 
     private List<AuthorReadOnlyDto> Authors;
 
     private Response<List<AuthorReadOnlyDto>> response = new Response<List<AuthorReadOnlyDto>> { Success = true };
 
-
-
-    public async Task loadAuthors()
+    protected override async Task OnInitializedAsync()
     {
+
+        await loadAuthors(1);
+      
+    }
+
+
+    async Task handleSubmit()
+    {
+        await loadAuthors(1);
+    }
+
+
+
+
+    async Task loadAuthors(int Page)
+    {
+
         loading = true;
-        response = await authorService.GetAuthors();
+        authorFilterDto.Page = Page;
+        authorFilterDto.QuantityPerPage = 10;
+
+        
+        response = await authorService.GetSearchAuthors(authorFilterDto);
+        Console.WriteLine(response.ToString());
         if (response.Success)
         {
+          
             Authors = response.data;
             loading = false;
         }
-
+      
+        //await Task.Delay(4000);
+       
     }
-    protected override async Task OnInitializedAsync()
-    {
-        
-        response = await authorService.GetAuthors();
-        if (response.Success)
-        {
-            Authors = response.data;
-        }
-    }
-
-    private readonly DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
-
-    private Task OpenDialogAsync(DialogOptions options)
-    {
-        // var options = new DialogOptions { CloseOnEscapeKey = true };
-
-        return DialogService.ShowAsync<CreateAuthorDialog>("Simple Dialog", options);
-    }
-
-
-
-
-
 
 
 
@@ -284,4 +288,18 @@
     }
 
 
-}
+
+
+
+
+
+
+
+
+
+
+
+    
+    }
+
+
