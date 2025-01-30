@@ -1,286 +1,283 @@
 ﻿@page "/authors/search"
-@inject IAuthorService authorService;
-
+@inject IAuthorService authorService
 @inject NavigationManager navManager
-
-
-
 @inject HttpClient http
 @inject IJSRuntime js
 
+@inject HttpInerceptorService _interceptor
+
+@implements IDisposable
 @if (response.Success == false)
 {
     <div class="alert alert-danger">
         <p><em>@response.Message</em></p>
     </div>
-
 }
-
 
 <div class="side-app">
     <!-- CONTAINER -->
     <div class="main-container container-fluid">
         <!-- PAGE-HEADER -->
-
-
-
         <div class="page-header">
-
             <div class="ms-auto pageheader-btn">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Areas</li>
+                    <li class="breadcrumb-item active" aria-current="page">Authors</li>
                 </ol>
             </div>
         </div>
 
-
         <div class="col-offset-10 col-md-2 mb-3">
-            <div class="btn-list">
-                <MudButton Variant="Variant.Filled"
-                EndIcon="@Icons.Material.Filled.Add"
-                Class="align-content-lg-end"
-                OnClick="goToAddAuthor"
-                Size="Size.Large"
-                Color="Color.Primary">
-                    Add New Author
-                </MudButton>
-
-
-
-            </div>
+            <MudButton Variant="Variant.Filled"
+                       EndIcon="@Icons.Material.Filled.Add"
+                       Class="align-content-lg-end"
+                       @onclick="(() => OpenCreateForm(null))"
+                       Size="Size.Large"
+                       Color="Color.Primary">
+                Add New Author
+            </MudButton>
         </div>
 
-
-
-
-
-        <!--start searcj b;pcl-->
-
+        <!-- Search block -->
         <div class="card mt-3 border-0">
             <div class="card-body">
-
-
                 <EditForm Model="authorFilterDto" OnValidSubmit="handleSubmit">
                     <DataAnnotationsValidator />
                     <ValidationSummary />
 
                     <div class="row g-2">
                         <div class="col-md-2">
-                            <MudTextField Label="First Name" Variant="Variant.Outlined" @bind-Value="authorFilterDto.FirstName"
-                            For="@(() => authorFilterDto.FirstName)" />
-
+                            <MudTextField Label="First Name"
+                                          Variant="Variant.Outlined"
+                                          @bind-Value="authorFilterDto.FirstName"
+                                          For="@(() => authorFilterDto.FirstName)" />
                         </div>
 
                         <div class="col-md-2">
-                            <MudTextField Label="Last Name" Variant="Variant.Outlined" @bind-Value="authorFilterDto.LastName"
+                            <MudTextField Label="Last Name"
+                                          Variant="Variant.Outlined"
+                                          @bind-Value="authorFilterDto.LastName"
                                           For="@(() => authorFilterDto.LastName)" />
-                            @*   <MudTextField @bind-Value="TextValue" Label="Last Name" Variant="Variant.Outlined"></MudTextField> *@
-
                         </div>
 
-
                         <div class="col-md-2">
-                            @*  <MudTextField @bind-Value="TextValue" Label="Outlined" Variant="Variant.Outlined"></MudTextField> *@
-
+                            <!-- Empty Column -->
                         </div>
 
                         <div class="col-md-2">
                             <div class="search-box">
-                                @* <MudDatePicker Label="Date From" Variant="Variant.Outlined" /> *@
-
+                                <!-- <MudDatePicker Label="Date From" Variant="Variant.Outlined" /> -->
                             </div>
                         </div>
+
                         <div class="col-md-2">
-
-                            @* <MudDatePicker Label="Date To" Variant="Variant.Outlined" /> *@
-
+                            <!-- <MudDatePicker Label="Date To" Variant="Variant.Outlined" /> -->
                         </div>
 
-
                         <div class="col-md-2">
-                            <p />
-
-                            <MudButton Color="Color.Inherit" Size="Size.Large" ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Filled.Search" Style="background-color:green;color:white;">
+                            <MudButton Color="Color.Inherit"
+                                       Size="Size.Large"
+                                       ButtonType="ButtonType.Submit"
+                                       StartIcon="@Icons.Material.Filled.Search"
+                                       Style="background-color:green;color:white;">
                                 Filter
                             </MudButton>
 
-                            <MudButton Color="Color.Inherit" Size="Size.Large"   StartIcon="@Icons.Material.Filled.LockReset" Style="background-color:red;color:white;">
+                            <MudButton Color="Color.Inherit"
+                                       Size="Size.Large"
+                                       StartIcon="@Icons.Material.Filled.LockReset"
+                                       Style="background-color:red;color:white;">
                                 Export
                             </MudButton>
-
                         </div>
-
-
-
-
                     </div>
                 </EditForm>
-                <!--end row-->
-
             </div>
         </div>
 
-
-        <!-- end container flue-->
-
-
-
-        @if (loading == true)
+        @if (loading)
         {
             <Loading />
-
-
         }
-
         else
         {
-
-
-
-
-
-
-            <!-- PAGE-HEADER END -->
             <MudTable Items="@Authors"
-            Dense="true"
-            Hover="@hover"
-            SortLabel="Sort By"
-            Bordered="@bordered" Striped="@striped">
+                      Dense="true"
+                      Hover="@hover"
+                      SortLabel="Sort By"
+                      @ref="table"
+                      ServerData="loadAuthors"
+                      Bordered="@bordered"
+                      Striped="@striped">
 
                 <ToolBarContent>
-                    <MudText Typo="Typo.h6">Areas</MudText>
+                    <MudText Typo="Typo.h6">Authors</MudText>
                     <MudSpacer />
-
-
-
-
-
                 </ToolBarContent>
+
                 <HeaderContent>
                     <MudTh>First Name</MudTh>
-                    <MudTh>Last Name </MudTh>
+                    <MudTh>Last Name</MudTh>
                     <MudTh>Action</MudTh>
-
                 </HeaderContent>
 
                 <RowTemplate>
-
                     <MudTd DataLabel="firstName">@context.FirstName</MudTd>
                     <MudTd DataLabel="lastName">@context.LastName</MudTd>
 
                     <MudTd DataLabel="Actions">
-
                         <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                        Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" />
-
+                                       @onclick="(() => Delete(context.Id))"
+                                       Variant="Variant.Outlined"
+                                       Color="Color.Error"
+                                       Size="Size.Small" />
 
                         <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                        Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
-
+                                       @onclick="(() => OpenCreateForm(id: context.Id))"
+                                       Variant="Variant.Outlined"
+                                       Color="Color.Primary"
+                                       Size="Size.Small" />
                     </MudTd>
                 </RowTemplate>
-                <PagerContent>
 
-                    <Pagination TotaPagesQuantity="totalPageQuantity" CurrentPage="currentPage" Radius="2"
-                    SelectedPage="SelectedPage"></Pagination>
+                <PagerContent>
+                    <MudTablePager RowsPerPageString="@QuantityPerPage"
+                                   InfoFormat="@infoFormat"
+                                   TotalItems="@totalPageQuantity"
+                                   PageSizeOptions="new int[] { 30, 60, 100, 200 }" />
+
+                    
                 </PagerContent>
             </MudTable>
-
-
-
-
-
-
-
-
         }
 
     </div>
-
-
 </div>
 
-
+@inject NavigationManager navManager
+@inject IDialogService dialogService
+@inject IHttpContacts<PagedResult<AuthorReadOnlyDto>> authorsService
+@inject HttpInerceptorService _interceptor
 
 @code {
+    private readonly DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+    @inject ISnackbar snackBar
 
     private bool _error;
     private bool _completed;
     private bool _disabled;
 
     private int _index;
-
-
     private bool dense = false;
     private bool hover = true;
     private bool striped = false;
     private bool bordered = false;
     private bool loading = true;
 
-
-
-    private int totalPageQuantity = 10;
+    private int totalPageQuantity = 300;
+    private string? QuantityPerPage;
     private int currentPage = 1;
+    private string infoFormat = "Showing item {0} to {1} of {2}";
     private string nameFilter = string.Empty;
-
-
-
 
     private async Task SelectedPage(int page)
     {
         currentPage = page;
-        await loadAuthors(page);
+       // await loadAuthors(page);
     }
 
-
-
-
+    private MudTable<AuthorReadOnlyDto> table;
     private AuthorFilterDto authorFilterDto = new AuthorFilterDto();
-
     private List<AuthorReadOnlyDto> Authors;
-
     private Response<List<AuthorReadOnlyDto>> response = new Response<List<AuthorReadOnlyDto>> { Success = true };
+
+
+  // protected override Task OnAfterRenderAsync(bool firstRender)
+  //   {
+  //       table.SetRowsPerPage(10);
+  //       return base.OnAfterRenderAsync(true);
+  //   }
+
 
     protected override async Task OnInitializedAsync()
     {
-
-        await loadAuthors(1);
-      
+        await loadAuthors(new TableState(), CancellationToken.None);
     }
-
 
     async Task handleSubmit()
     {
-        await loadAuthors(1);
+        await loadAuthors(new TableState(), CancellationToken.None);
     }
 
-
-
-
-    async Task loadAuthors(int Page)
+    public async Task<TableData<AuthorReadOnlyDto>> loadAuthors(TableState state, CancellationToken cancellationToken)
     {
-
+        Console.WriteLine("Loading Authors");
+     
         loading = true;
-        authorFilterDto.Page = Page;
-        authorFilterDto.QuantityPerPage = 10;
+        authorFilterDto.Page = 1;
+       QuantityPerPage = "30";
 
-        
-        response = await authorService.GetSearchAuthors(authorFilterDto);
-        Console.WriteLine(response.ToString());
-        if (response.Success)
-        {
-          
-            Authors = response.data;
-            loading = false;
-        }
-      
-        //await Task.Delay(4000);
-       
+        _interceptor.MonitorEvent();
+
+
+        Console.WriteLine($"{EndPoints.AuthorsEndPoint}Search?FirstName={authorFilterDto.FirstName}&LastName={authorFilterDto.LastName}&Page={state.Page + 1}&QuantityPerPage={state.PageSize}");
+        var response =
+            await authorsService.GetPagined($"{EndPoints.AuthorsEndPoint}Search?FirstName={authorFilterDto.FirstName}&LastName={authorFilterDto.LastName}&Page={state.Page+1}&QuantityPerPage={QuantityPerPage}");
+
+        Authors = response.Data;
+        totalPageQuantity = response.totalRecords;
+        QuantityPerPage = response.quantityPerPage.ToString();
+        infoFormat = $"Showing {QuantityPerPage} to {response.totalRecords} of {totalPageQuantity}";
+
+        loading = false;
+
+
+        return new TableData<AuthorReadOnlyDto>() { Items = response.Data, TotalItems = response.totalRecords };
     }
 
+    private async Task OpenCreateForm(int? id)
+    {
+        IDialogReference dialog;
+        var parameters = new DialogParameters();
+        if (id != null)
+        {
+            parameters.Add("Id", id.Value);
+            parameters.Add("Title", "Update Author");
+            parameters.Add("ButtonText", "Update Author");
+            dialog = await dialogService.ShowAsync<CreateAuthorDialog>("Update Author", parameters, _maxWidth);
+        }
+        else
+        {
+            parameters.Add("Title", "Add New Author");
+            parameters.Add("ButtonText", "Register Author");
+            dialog = await dialogService.ShowAsync<CreateAuthorDialog>("Add NewA", parameters, _maxWidth);
+        }
 
+        var result = await dialog.Result;
+        await table.ReloadServerData();
+        
+    }
 
+    private async Task Delete(int id)
+    {
+        var parameters = new DialogParameters
+        {
+            { "ContentText", "Do you really want to delete this record?" },
+            { "ButtonText", "Delete" },
+            { "Color", Color.Error }
+        };
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+        var dialog = await dialogService.ShowAsync<ConfirmDialog>("Delete", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            await authorService.DeleteAuthor(id);
+            snackBar.Add("Successfully Deleted Record", Severity.Error);
+             await table.ReloadServerData();
+        }
+    }
 
     async Task goToAddAuthor()
     {
@@ -288,18 +285,8 @@
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-    
+    public void Dispose()
+    {
+        _interceptor.DisposeEvent();
     }
-
-
+}

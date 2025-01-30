@@ -8,12 +8,17 @@
 						<!-- PAGE-HEADER -->
 						<div class="page-header">
 							<div>
-								<h1 class="page-title">Dashboard</h1>
+				<h1 class="page-title">  @userId</h1>
 							</div>
 							<div class="ms-auto pageheader-btn">
 								<ol class="breadcrumb">
 									<li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
-									<li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+									<li class="breadcrumb-item active" aria-current="page">
+
+						@userId
+
+                      
+									</li>
 								</ol>
 							</div>
 						</div>
@@ -41,7 +46,7 @@
 										<i class='fa fa-long-arrow-up'></i>
 										42%
 									</span>
-									since last month
+									@userId
 								</p>
 							</div>
 							<div class="col col-auto top-icn dash">
@@ -126,7 +131,7 @@
 								<p class="text-muted mb-0 mt-2 fs-12">
 									<span class="icn-box text-success fw-semibold fs-13 me-1">
 										<i class='fa fa-long-arrow-up'></i>
-										9%
+										@userId
 									</span>
 									since last month
 								</p>
@@ -245,6 +250,10 @@
 						</div>
 						</div>
 
+
+
+						@inject AuthenticationStateProvider AuthenticationStateProvider
+						@inject NavigationManager navManager
 @code {
 	private int Index = -1; //default value cannot be 0 -> first selectedindex is 0.
 
@@ -262,7 +271,18 @@
 	 public double[] data = { 25, 77, 28, 5 };
     public string[] labels = { "Oil", "Coal", "Gas", "Biomass" };
 
+	private string userId;
+	private async Task GetClaimsPrincipalData()
+	{
+		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+		var user = authState.User;
+		if (user!.Identity.IsAuthenticated)
+		{
 
+			userId =
+				user.FindFirst(c => c.Type == "uid")?.Value;
 
+		}
 
 	}
+}

@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\author\AuthorFilterDto.cs" />
+    <Compile Include="Models\PagedResult.cs" />
+    <Compile Include="Models\PaginatedResponseDto.cs" />
     <Compile Include="Models\PaginationDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

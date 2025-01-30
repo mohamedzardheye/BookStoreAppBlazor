@@ -5,6 +5,7 @@
 
 @inject IDialogService DialogService
 
+@inject IHttpContacts<AuthorReadOnlyDto> authorsService
 
 @if (response.Success == false)
 {
@@ -38,7 +39,7 @@
                 <MudButton Variant="Variant.Filled"
                 EndIcon="@Icons.Material.Filled.Add"
                 Class="align-content-lg-end"
-                OnClick="@(() => OpenDialogAsync(_maxWidth))"
+                @onclick="(()=>OpenCreateForm(null))"
                 Size="Size.Large"
                 Color="Color.Primary">
                     Add New Author
@@ -147,7 +148,7 @@
             >
 
                 <ToolBarContent>
-                    <MudText Typo="Typo.h6">Areas</MudText>
+                    <MudText Typo="Typo.h6">All Authors</MudText>
                     <MudSpacer />
 
 
@@ -174,6 +175,7 @@
 
 
                         <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                        @onclick="(()=>OpenCreateForm(id:context.Id))"
                         Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
 
                     </MudTd>
@@ -200,7 +202,7 @@
 
 
 @code {
-
+    @inject IDialogService Dialog
     private bool _error;
     private bool _completed;
     private bool _disabled;
@@ -221,6 +223,31 @@
     private string nameFilter = string.Empty;
 
 
+
+    private async Task OpenCreateForm(int? id)
+    {
+        IDialogReference dialog;
+        var parameters = new DialogParameters();
+        if (id != null)
+        {
+            parameters.Add("Id", id.Value);
+            parameters.Add("Title", "Update Author");
+          
+            parameters.Add("ButtonText", "Update Author");
+            dialog = await Dialog.ShowAsync<CreateAuthorDialog>("Update Author", parameters, _maxWidth);
+        }
+        else
+        {
+            parameters.Add("Title", "Add New Author");
+            parameters.Add("ButtonText", "Register Author");
+
+            dialog = await Dialog.ShowAsync<CreateAuthorDialog>("Add NewA", parameters, _maxWidth);
+        }
+        var result = await dialog.Result;
+        await OnInitializedAsync();
+    }
+
+
     private async Task SelectedPage(int page)
     {
         currentPage = page;
@@ -229,7 +256,7 @@
 
 
 
-    public string TextValue { get; set; }
+    public string? TextValue { get; set; }
 
 
 
@@ -243,22 +270,17 @@
     public async Task loadAuthors()
     {
         loading = true;
-        response = await authorService.GetAuthors();
-        if (response.Success)
-        {
-            Authors = response.data;
-            loading = false;
-        }
+
+       var response = await authorsService.GetAll($"{EndPoints.AuthorsEndPoint}");
+
+        Authors = response;
+       loading = false;
+       
 
     }
     protected override async Task OnInitializedAsync()
     {
-        
-        response = await authorService.GetAuthors();
-        if (response.Success)
-        {
-            Authors = response.data;
-        }
+        await loadAuthors();
     }
 
     private readonly DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
@@ -269,6 +291,9 @@
 
         return DialogService.ShowAsync<CreateAuthorDialog>("Simple Dialog", options);
     }
+
+
+
 
 
 

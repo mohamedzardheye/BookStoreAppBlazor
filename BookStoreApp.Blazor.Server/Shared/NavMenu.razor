@@ -89,7 +89,11 @@
 
             <Authorized>
 
-            <MudNavLink Href="/Authors/" Icon="@Icons.Material.Filled.TaskAlt"> @context.User?.Identity?.Name?.ToString()</MudNavLink>
+            <MudNavLink Href="/Authors/" Icon="@Icons.Material.Filled.TaskAlt">
+                @userName
+                
+            
+            </MudNavLink>
 
             <br/>
 
@@ -123,6 +127,16 @@
 
 
             <NotAuthorized>
+
+
+            <MudText Typo="Typo.h5" Class="ml-3">
+
+                
+                <span>
+                    <img src="sahal_logo_white.png" width="200" height="200" style="color:white; margin-left:-15%;" alt="profile-user" />
+                </span>
+            </MudText>
+
             <MudNavLink Href="user/login" Icon="@Icons.Material.Filled.TaskAlt">Login</MudNavLink>
             <MudNavLink Href="user/register" Icon="@Icons.Material.Filled.TaskAlt">Register</MudNavLink>
 
@@ -135,6 +149,10 @@
 </MudNavMenu>
 
 
+@inject IAuthenticationService authService
+
+@inject NavigationManager navManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
 @code {
     private bool collapseNavMenu = true;
@@ -147,4 +165,42 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+
+    private string userName;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+
+
+        var claims = user.Claims;
+        foreach (var claim in claims)
+        {
+            Console.WriteLine($"{claim.Type}: {claim.Value}");
+
+
+        }
+
+        if (user.Identity.IsAuthenticated)
+        {
+            // Retrieve the 'sub' claim (which is typically used for the user identifier or email)
+            var subClaim = user.FindFirst("sub");
+            if (subClaim != null)
+            {
+                userName = subClaim.Value;  // Use the 'sub' claim (email or user identifier)
+            }
+            else
+            {
+                userName = "Name not available in claims";
+            }
+        }
+        else
+        {
+            userName = "Guest";
+        }
+    }
+
 }

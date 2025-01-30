@@ -11,49 +11,40 @@ namespace BookStoreApp.Blazor.Server.Services.Authentication
         private readonly ILocalStorageService localStorage;
         private readonly AuthenticationStateProvider authenticationStateProvider;
 
-        public AuthenticationService(IClient httpClient , 
-                                     ILocalStorageService localStorage,
-                                     AuthenticationStateProvider authenticationStateProvider)
+        public AuthenticationService(
+            IClient httpClient,
+            ILocalStorageService localStorage,
+            AuthenticationStateProvider authenticationStateProvider)
         {
             this.httpClient = httpClient;
             this.localStorage = localStorage;
             this.authenticationStateProvider = authenticationStateProvider;
         }
 
-      
         public async Task<bool> AuthenticateAsync(LoginUserDto loginModel)
         {
-           Console.WriteLine("Login Service");
+            Console.WriteLine("Login Service");
+
+            // Send the login request to the backend API
             var response = await httpClient.LoginAsync(loginModel);
 
             Console.WriteLine(response.ToString());
 
-
-            // store Token in LocalStorage
-
+            // Store Token and Email in LocalStorage
             await localStorage.SetItemAsync("accessToken", response.Token);
             await localStorage.SetItemAsync("userName", response.Email);
 
-            //Change auth state of app
+            // Change the authentication state of the app
             Console.WriteLine(response.Token);
             await ((ApiAuthenticationStateProvider)authenticationStateProvider).LoggedIn();
 
             return true;
-
-
-            //   authenticationStateProvider.
-
-            // change the default request Authorization header
-            //httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", response.Token);
-            //  return response;
-
         }
-
 
         public async Task Logout()
         {
-           await ((ApiAuthenticationStateProvider)authenticationStateProvider).LoggedOut();
-
+            // Logout the user and change authentication state
+            await ((ApiAuthenticationStateProvider)authenticationStateProvider).LoggedOut();
         }
     }
 }

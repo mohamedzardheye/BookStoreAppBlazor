@@ -2,7 +2,7 @@
 
 namespace BookStoreApp.Api.Models.Author
 {
-    public class AuthorCreateDto
+    public class AuthorCreateDto :BaseDto
     {
 
         [Required]

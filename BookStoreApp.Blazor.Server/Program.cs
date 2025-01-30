@@ -1,13 +1,16 @@
 
 using Blazored.LocalStorage;
+using BookStoreApp.Blazor.Server.Configurations;
 using BookStoreApp.Blazor.Server.Providers;
 using BookStoreApp.Blazor.Server.Services;
 using BookStoreApp.Blazor.Server.Services.Authentication;
 using BookStoreApp.Blazor.Server.Services.Base;
+using BookStoreApp.Blazor.Server.Services.Contracts;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using MudBlazor.Services;
+using Toolbelt.Blazor.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +21,20 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddBlazoredLocalStorage();
 builder.Services.AddHttpClient<IClient, Client>(cl => cl.BaseAddress = new Uri("https://localhost:7039"));
 
+
+
+
+builder.Services.AddTransient(typeof(IHttpContacts<>), typeof(HttpContracts<>));
+builder.Services.AddHttpClientInterceptor();
+builder.Services.AddScoped<HttpInerceptorService>();
+
+
+
+
+
+
+
+builder.Services.AddAutoMapper(typeof(MapperConfig));
 builder.Services.AddScoped<Client, Client>(); // Register IClient
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 

@@ -55,7 +55,7 @@
                         <MudStack Style="width: 300px">
                            
                                 <MudSelect @bind-Value="_value"
-                                           Variant= "Variant.Filled"
+                                           Variant= "Variant.Outlined"
                                            Label="Select Departature "
                                            Margin="_margin"
                                            Dense="_dense"
@@ -77,7 +77,7 @@
                        <MudStack Style="width: 300px">
                            
                                 <MudSelect @bind-Value="_value"
-                                           Variant= "Variant.Filled"
+                                               Variant="Variant.Outlined"
                                            Label="Select Arrival "
                                            Margin="_margin"
                                            Dense="_dense"
@@ -101,8 +101,8 @@
 
                                 <MudStack Style="width: 300px">
 
-                                    <MudDatePicker Label="Current UI Culture" @bind-Date="_date" />
-
+                                    <MudDatePicker Label="Current UI Culture" @bind-Date="_date" Variant="Variant.Outlined"   />
+                                   
 
                                 </MudStack>
 
@@ -117,14 +117,14 @@
                             <MudDivider/>
       <MudStack Row Class="justify-space-between mud-width-full">
                             <MudStack Style="width: 300px">
-                                <MudButton Variant="Variant.Filled">Default</MudButton>
+                                    <MudButton Variant="Variant.Outlined">Default</MudButton>
                                 </MudStack>
                                 <MudStack Style="width: 300px">
-                                <MudButton Variant="Variant.Filled" Color="Color.Primary">Primary</MudButton>
+                                    <MudButton Variant="Variant.Outlined" Color="Color.Primary">Primary</MudButton>
                                 </MudStack>
 
                                 <MudStack Style="width: 300px">
-                                <MudButton Variant="Variant.Filled" Color="Color.Secondary">Secondary</MudButton>
+                                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary">Secondary</MudButton>
                                 </MudStack>
                              
                          
@@ -202,6 +202,7 @@
 
     private DateTime? _date = new DateTime(2021, 02, 14); // 1399-11-26 in Persian calendar
 
+        private DateRange _dateRange = new DateRange(DateTime.Now.Date, DateTime.Now.AddDays(5).Date);
 
 
      private string[] _states =

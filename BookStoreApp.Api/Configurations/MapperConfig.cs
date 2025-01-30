@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
 using BookStoreApp.Api.Data;
+using BookStoreApp.Api.Models;
 using BookStoreApp.Api.Models.Author;
 using BookStoreApp.Api.Models.Book;
+using BookStoreApp.Api.Models.booking;
 using BookStoreApp.Api.Models.User;
+using Microsoft.AspNetCore.Authorization;
+using Sahal_Projects.Areas.APIs.Model;
 
 namespace BookStoreApp.Api.Configurations
 {
@@ -13,7 +17,7 @@ namespace BookStoreApp.Api.Configurations
             CreateMap<AuthorCreateDto, Author>().ReverseMap();
             CreateMap<AuthorReadOnlyDto, Author>().ReverseMap();
             CreateMap<AuthorUpdateDto, Author>().ReverseMap();
-
+            CreateMap<AuthorReadOnlyDto, PaginatedResponseDto<AuthorReadOnlyDto>>().ReverseMap();
 
             CreateMap<BookUpdateDto, Book>().ReverseMap();
             CreateMap<BookCreateDto, Book>().ReverseMap();
@@ -29,6 +33,12 @@ namespace BookStoreApp.Api.Configurations
 
 
             CreateMap<ApiUser, UserDto>().ReverseMap();
+
+
+
+
+
+            CreateMap<booking_registration, booking_registration_read_only>().ReverseMap();
 
         }
     }

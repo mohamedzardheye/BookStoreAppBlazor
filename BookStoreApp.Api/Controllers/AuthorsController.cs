@@ -19,7 +19,7 @@ namespace BookStoreApp.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+   /// [Authorize]
     //[AllowAnonymous]
    
     public class AuthorsController : ControllerBase
@@ -87,44 +87,50 @@ namespace BookStoreApp.Api.Controllers
         //    }
         //}
 
-         [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<AuthorReadOnlyDto>>> Get([FromQuery] AuthorFilterDto pagination )
+        [HttpGet("search")]
+        public async Task<ActionResult<PaginatedResponseDto<AuthorReadOnlyDto>>> Get([FromQuery] AuthorFilterDto pagination)
         {
-
-
             try
             {
-                var queryable = _context.Authors.AsQueryable(); 
-         
-
-
-
+                var queryable = _context.Authors.AsQueryable();
 
                 if (pagination.FirstName != null)
                 {
                     queryable = queryable.Where(x => x.FirstName.Contains(pagination.FirstName));
-
                 }
                 if (pagination.LastName != null)
                 {
                     queryable = queryable.Where(x => x.LastName.Contains(pagination.LastName));
                 }
 
+                // Get the total count of authors that match the filter criteria
+                var totalCount = await queryable.CountAsync();
+
                 queryable = queryable.OrderByDescending(x => x.Id);
 
-                await HttpContext.InsertPaginationParameterInResponse(queryable, pagination.QuantityPerPage);
+                // Pagination logic
                 var authors = await queryable.Paginate(pagination).ToListAsync();
-               
-
                 var authorDto = mapper.Map<IEnumerable<AuthorReadOnlyDto>>(authors);
-                return Ok(authorDto);
+
+                // Wrap the paginated data in a response DTO
+                var response = new PaginatedResponseDto<AuthorReadOnlyDto>
+                {
+                    TotalRecords = totalCount,
+                    CurrentPage = pagination.Page, // Assuming pagination contains current page info
+                    QuantityPerPage = pagination.QuantityPerPage,
+                    Data = authorDto.ToList()
+                   
+                };
+
+                return Ok(response);
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, $"Error Performing Get{nameof(GetAuthors)}");
+                logger.LogError(ex, $"Error Performing Get{nameof(Get)}");
                 return StatusCode(500, Messages.Error500Message);
             }
         }
+
         // GET: api/Authors/5
         [HttpGet("{id}")]
         public async Task<ActionResult<AuthorReadOnlyDto>> GetAuthor(int id)
@@ -141,6 +147,8 @@ namespace BookStoreApp.Api.Controllers
                 }
                 var authorDto = mapper.Map<AuthorReadOnlyDto>(author);
 
+                Console.WriteLine(authorDto.ToString());
+
                 return authorDto;
             }
             catch (Exception ex)
@@ -155,7 +163,7 @@ namespace BookStoreApp.Api.Controllers
         // PUT: api/Authors/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAuthor(int id, AuthorUpdateDto authorDto)
+        public async Task<IActionResult> PutAuthor(int id, AuthorCreateDto authorDto)
         {
             if (id != authorDto.Id)
             {

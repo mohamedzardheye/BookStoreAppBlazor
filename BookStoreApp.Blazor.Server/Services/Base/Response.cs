@@ -1,4 +1,5 @@
-﻿namespace BookStoreApp.Blazor.Server.Services.Base
+﻿
+namespace BookStoreApp.Blazor.Server.Services.Base
 {
     public class Response<T>
     {
@@ -8,5 +9,10 @@
         public bool Success { get; set; }
 
         public T data { get; set;  }
+
+        public static implicit operator Response<T>(Response<List<AuthorReadOnlyDtoPaginatedResponseDto>> v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

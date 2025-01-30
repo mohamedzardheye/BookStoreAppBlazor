@@ -2,21 +2,23 @@
 
 namespace BookStoreApp.Api.Models.Author
 {
-    public class AuthorReadOnlyDto 
+    public class AuthorReadOnlyDto : BaseDto
     {
 
         [Required]
         [StringLength(50)]
-        public string FirstName { get; set; }
+        public string? FirstName { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string LastName { get; set; }
+        public string? LastName { get; set; }
 
 
 
         [StringLength(250)]
-        public string Bio { get; set; }
+        public string? Bio { get; set; }
+
+
 
     }
 }

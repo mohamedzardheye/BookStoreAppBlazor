@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Sahal_Projects.Areas.APIs.Model;
 
 namespace BookStoreApp.Api.Data;
 
@@ -23,7 +24,8 @@ public partial class BookStoreDbContext : IdentityDbContext<ApiUser>
     public virtual DbSet<Author> Authors { get; set; }
 
     public virtual DbSet<Book> Books { get; set; }
-
+    public virtual DbSet<booking_registration> booking_registration { get; set; }
+    public virtual DbSet<booking_routes> booking_routes { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

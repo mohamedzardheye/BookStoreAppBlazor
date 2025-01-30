@@ -24,7 +24,7 @@
 
 
         <MudButton StartIcon="@Icons.Material.Filled.Dashboard" Href="/" Color="Color.Inherit" >
-            Dashboard
+            @userName
         </MudButton>
 
 
@@ -60,7 +60,59 @@
         @Body
     </MudMainContent>
 </MudLayout>
+
+@inject IAuthenticationService authService
+@inject IJSRuntime jsRuntime
+@inject NavigationManager navManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
 @code {
+  
+
+
+
+    private string userName;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+
+
+        var claims = user.Claims;
+        foreach (var claim in claims)
+        {
+            Console.WriteLine($"{claim.Type}: {claim.Value}");
+
+
+        }
+
+        if (user.Identity.IsAuthenticated)
+        {
+            // Retrieve the 'sub' claim (which is typically used for the user identifier or email)
+            var subClaim = user.FindFirst("sub");
+            if (subClaim != null)
+            {
+                userName = subClaim.Value;  // Use the 'sub' claim (email or user identifier)
+            }
+            else
+            {
+                userName = "Name not available in claims";
+               
+            }
+        }
+        else
+        {
+            userName = "Guest";
+          // navManager.NavigateTo("/user/login", forceLoad: true);
+          
+        }
+    }
+
+
+
     bool _drawerOpen = true;
 
     void DrawerToggle()

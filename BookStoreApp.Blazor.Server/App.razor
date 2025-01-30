@@ -1,4 +1,6 @@
-﻿@using BookStoreApp.Blazor.Server.Shared
+﻿@using BookStoreApp.Blazor.Server.Providers
+@using BookStoreApp.Blazor.Server.Shared
+ @inject NavigationManager avigationManager
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
@@ -46,3 +48,14 @@
     </NotFound>
 </Router>
  *@
+
+
+@code {
+    [Inject] private ApiAuthenticationStateProvider AuthStateProvider { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        // Start checking token expiration
+        AuthStateProvider.StartChecking();
+    }
+}
