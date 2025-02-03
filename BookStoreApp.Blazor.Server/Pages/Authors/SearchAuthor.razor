@@ -144,9 +144,9 @@
                     <MudTablePager RowsPerPageString="@QuantityPerPage"
                                    InfoFormat="@infoFormat"
                                    TotalItems="@totalPageQuantity"
-                                   PageSizeOptions="new int[] { 30, 60, 100, 200 }" />
+                                   PageSizeOptions="new int[] { 10, 60, 100, 200 }" />
 
-                    
+
                 </PagerContent>
             </MudTable>
         }
@@ -163,11 +163,8 @@
     private readonly DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
     @inject ISnackbar snackBar
 
-    private bool _error;
-    private bool _completed;
-    private bool _disabled;
 
-    private int _index;
+
     private bool dense = false;
     private bool hover = true;
     private bool striped = false;
@@ -180,11 +177,7 @@
     private string infoFormat = "Showing item {0} to {1} of {2}";
     private string nameFilter = string.Empty;
 
-    private async Task SelectedPage(int page)
-    {
-        currentPage = page;
-       // await loadAuthors(page);
-    }
+
 
     private MudTable<AuthorReadOnlyDto> table;
     private AuthorFilterDto authorFilterDto = new AuthorFilterDto();
@@ -192,11 +185,6 @@
     private Response<List<AuthorReadOnlyDto>> response = new Response<List<AuthorReadOnlyDto>> { Success = true };
 
 
-  // protected override Task OnAfterRenderAsync(bool firstRender)
-  //   {
-  //       table.SetRowsPerPage(10);
-  //       return base.OnAfterRenderAsync(true);
-  //   }
 
 
     protected override async Task OnInitializedAsync()
@@ -212,17 +200,17 @@
     public async Task<TableData<AuthorReadOnlyDto>> loadAuthors(TableState state, CancellationToken cancellationToken)
     {
         Console.WriteLine("Loading Authors");
-     
+
         loading = true;
         authorFilterDto.Page = 1;
-       QuantityPerPage = "30";
+        QuantityPerPage = "10";
 
         _interceptor.MonitorEvent();
 
 
         Console.WriteLine($"{EndPoints.AuthorsEndPoint}Search?FirstName={authorFilterDto.FirstName}&LastName={authorFilterDto.LastName}&Page={state.Page + 1}&QuantityPerPage={state.PageSize}");
         var response =
-            await authorsService.GetPagined($"{EndPoints.AuthorsEndPoint}Search?FirstName={authorFilterDto.FirstName}&LastName={authorFilterDto.LastName}&Page={state.Page+1}&QuantityPerPage={QuantityPerPage}");
+            await authorsService.GetPagined($"{EndPoints.AuthorsEndPoint}Search?FirstName={authorFilterDto.FirstName}&LastName={authorFilterDto.LastName}&Page={state.Page + 1}&QuantityPerPage={QuantityPerPage}");
 
         Authors = response.Data;
         totalPageQuantity = response.totalRecords;
@@ -255,7 +243,7 @@
 
         var result = await dialog.Result;
         await table.ReloadServerData();
-        
+
     }
 
     private async Task Delete(int id)
@@ -275,7 +263,7 @@
         {
             await authorService.DeleteAuthor(id);
             snackBar.Add("Successfully Deleted Record", Severity.Error);
-             await table.ReloadServerData();
+            await table.ReloadServerData();
         }
     }
 

@@ -3,7 +3,9 @@ using BookStoreApp.Api.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using MongoDB.Driver;
 using Serilog;
 using System.Text;
 
@@ -19,6 +21,17 @@ builder.Services.AddAutoMapper(typeof(MapperConfig));
 
 
 
+builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("MongoDB"));
+
+
+builder.Services.AddSingleton<IMongoDatabase>(sp => {
+
+    var databaseSettings = sp.GetRequiredService<IOptions<MongoDBSettings>>().Value;
+    var mongoDbClient = new MongoClient(databaseSettings.ConnectionURI);
+    var mongoDb = mongoDbClient.GetDatabase(databaseSettings.DatabaseName);
+
+    return mongoDb;
+});
 
 
 

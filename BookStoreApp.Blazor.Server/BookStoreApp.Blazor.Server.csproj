@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <Folder Include="Data\" />
+    <Folder Include="Pages\book\" />
   </ItemGroup>
 
   <ItemGroup>
