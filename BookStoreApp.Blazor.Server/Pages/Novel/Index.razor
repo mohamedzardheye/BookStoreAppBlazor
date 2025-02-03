@@ -1,0 +1,310 @@
+﻿@page "/novels/index"
+
+
+@inject NavigationManager navManager
+
+@inject IDialogService DialogService
+
+@inject IHttpContacts<NovelReadOnlyDto> novelsService
+
+
+
+
+<div class="side-app">
+    <!-- CONTAINER -->
+    <div class="main-container container-fluid">
+        <!-- PAGE-HEADER -->
+
+
+
+        <div class="page-header">
+
+            <div class="ms-auto pageheader-btn">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Areas</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- button to new author-->
+        <div class="col-offset-10 col-md-2 mb-3">
+            <div class="btn-list">
+                <MudButton Variant="Variant.Filled"
+                EndIcon="@Icons.Material.Filled.Add"
+                Class="align-content-lg-end"
+                @onclick="(()=>OpenCreateForm(null))"
+                Size="Size.Large"
+                Color="Color.Primary">
+                    Add New Author
+                </MudButton>
+
+
+
+            </div>
+        </div>
+
+
+
+
+
+
+        <!--start searcj b;pcl-->
+
+        <div class="card mt-3 border-0">
+            <div class="card-body">
+
+
+
+                <div class="row g-2">
+                    <div class="col-md-2">
+                        <MudTextField @bind-Value="TextValue" Label="title" Variant="Variant.Outlined"></MudTextField>
+
+                    </div>
+
+                 
+
+                    
+
+                    <div class="col-md-2">
+                        <div class="search-box">
+                            <MudDatePicker Label="Date From" Variant="Variant.Outlined" />
+
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+
+                        <MudDatePicker Label="Date To" Variant="Variant.Outlined" />
+
+                    </div>
+
+
+                    <div class="col-md-2">
+                        <p />
+
+                        <MudButton Color="Color.Inherit" Size="Size.Large" ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Filled.Search" Style="background-color:green;color:white;">
+                            Filter
+                        </MudButton>
+
+                        <MudButton Color="Color.Inherit" Size="Size.Large" ButtonType="ButtonType.Reset" StartIcon="@Icons.Material.Filled.LockReset" Style="background-color:red;color:white;">
+                            Reset
+                        </MudButton>
+
+                    </div>
+
+
+
+                    <!--end col-->
+                    <div class="col-md-2 mt-2">
+                        <div>
+                        </div>
+                    </div>
+                    <!--end col-->
+                </div>
+                <!--end row-->
+
+            </div>
+        </div>
+
+
+        <!-- end container flue-->
+
+
+
+        @if (Novals == null)
+        {
+            <Loading />
+
+
+        }
+
+        else
+        {
+
+
+
+
+
+
+            <!-- PAGE-HEADER END -->
+            <MudTable Items="@Novals"
+            Dense="true"
+            Hover="@hover"
+            SortLabel="Sort By"
+            Bordered="@bordered" Striped="@striped"
+            >
+
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">All Novals</MudText>
+                    <MudSpacer />
+
+
+
+
+
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh>Title</MudTh>
+                    <MudTh>Year </MudTh>
+                
+                    <MudTh>Summary </MudTh>
+                    <MudTh>price </MudTh>
+                    <MudTh>Action</MudTh>
+
+                </HeaderContent>
+
+                <RowTemplate>
+
+                    <MudTd DataLabel="Title">@context.Title</MudTd>
+                    <MudTd DataLabel="Year">@context.Year</MudTd>
+
+                
+
+                    <MudTd DataLabel="summary">@context.Summary</MudTd>
+
+                    <MudTd DataLabel="summary">@context.Price</MudTd>
+
+                    <MudTd DataLabel="Actions">
+
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                        Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" />
+
+
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                        @onclick="(()=>OpenCreateForm(id:context.Title))"
+                        Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
+
+                    </MudTd>
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[] { 30, 40, 50, 100 }" />
+                </PagerContent>
+            </MudTable>
+
+
+
+
+
+
+
+
+        }
+
+    </div>
+
+
+</div>
+
+
+
+@code {
+    @inject IDialogService Dialog
+    private bool _error;
+    private bool _completed;
+    private bool _disabled;
+
+    private int _index;
+
+
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = false;
+    private bool loading = true;
+
+
+
+    private int totalPageQuantity;
+    private int currentPage = 1;
+    private string nameFilter = string.Empty;
+
+
+
+    private async Task OpenCreateForm(string? id)
+    {
+        IDialogReference dialog;
+        var parameters = new DialogParameters();
+        if (id != null)
+        {
+            parameters.Add("Id", id);
+            parameters.Add("Title", "Update Author");
+
+            parameters.Add("ButtonText", "Update Author");
+            dialog = await Dialog.ShowAsync<CreateNovalDialog>("Update Author", parameters, _maxWidth);
+        }
+        else
+        {
+            parameters.Add("Title", "Add New Author");
+            parameters.Add("ButtonText", "Register Author");
+
+            dialog = await Dialog.ShowAsync<CreateNovalDialog>("Add NewA", parameters, _maxWidth);
+        }
+        var result = await dialog.Result;
+        await OnInitializedAsync();
+    }
+
+
+    private async Task SelectedPage(int page)
+    {
+        currentPage = page;
+
+    }
+
+
+
+    public string? TextValue { get; set; }
+
+
+
+
+    private List<NovelReadOnlyDto> Novals;
+
+    private Response<List<NovelReadOnlyDto>> response = new Response<List<NovelReadOnlyDto>> { Success = true };
+
+
+
+    public async Task loadNovals()
+    {
+        loading = true;
+
+        Console.WriteLine($"{EndPoints.NovalsEndPoint}");
+        var response = await novelsService.GetAll($"{EndPoints.NovalsEndPoint}");
+        Novals = response;
+
+    
+       loading = false;
+       
+
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await loadNovals();
+    }
+
+    private readonly DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+
+    private Task OpenDialogAsync(DialogOptions options)
+    {
+        // var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        return DialogService.ShowAsync<CreateNovalDialog>("Simple Dialog", options);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    async Task goToAddAuthor()
+    {
+        navManager.NavigateTo("/authors/create");
+    }
+
+
+}

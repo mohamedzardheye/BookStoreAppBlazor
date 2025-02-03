@@ -7,18 +7,159 @@
 @using System.ComponentModel.DataAnnotations
 
 
-<h3>Login</h3>
+
+<!-- Login 6 - Bootstrap Brain Component -->
 
 
-<div>
-
-    <MudPaper Height="400px" Width="100%">
-    <MudContainer MaxWidth="MaxWidth.Small">
+<section class="bg-primary p-3 p-md-4 p-xl" style="height:930px">
 
 
-        <MudGrid>
-            <MudItem xs="12" sm="7">
-                <MudPaper Class="pa-4">
+    <div class="container">
+        <div class="row justify-content-center">
+
+
+
+            <div class="brand-logo text-center">
+
+                <img class="logo-light logo-img logo-img-lg" src="images/sahal_logo_white.png" . /images/logo2x.png 2x" alt="logo" width="320" height="250">
+
+            </div>
+
+
+
+
+
+
+
+
+
+            <div class="col-12 col-md-9 col-lg-7 col-xl-6 col-xxl-5" style="margin-top:-5%;">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-3 p-md-4 p-xl-5">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="mb-5">
+                                    <h3>Log in</h3>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        @message
+
+
+                        <EditForm Model="@LoginModel" OnValidSubmit="HandleLogin">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary />
+
+
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <InputText id="Email" class="form-control" @bind-Value="LoginModel.Email" />
+                                <ValidationMessage For="@(() => LoginModel.Email)" />
+                            </div>
+
+
+
+                            <br />
+                            <div class="form-group">
+                                <label class="form-label" for="password">Passcode</label>
+                                <InputText id="Password" type="password" class="form-control" @bind-Value="LoginModel.Password" />
+                                <ValidationMessage For="@(() => LoginModel.Password)" />
+
+                            </div>
+
+                            <br /><br />
+
+                            @if (Loading)
+                            {
+                                  <div class="row justify-content-center">
+                                   <div class="col-12">
+                                         <div class="d-grid">
+                                        <div class="spinner-border text-primary text-center" role="status">
+                                            <span class="visually-hidden justify-content-center" style="float:right">Loading...</span>
+                                        
+                                    </div>
+                                        <h6>Loading Please Wait A Moment</h6>
+                                </div>
+                                </div>
+                                </div>
+                            }
+                            else {
+                                <div class="col-12">
+                                    <div class="d-grid">
+                                    <button class="btn bsb-btn-2xl btn-primary btn-lg" type="submit">Log in now</button>
+                                </div>
+                            </div>
+                            }
+
+
+
+
+                        </EditForm>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                        <div class="row">
+                            <div class="col-12">
+                                <hr class="mt-5 mb-4 border-secondary-subtle">
+                                <div class="d-flex gap-2 gap-md-4 flex-column flex-md-row justify-content-md-end">
+                                    <a href="#!" class="link-secondary text-decoration-none">Create new account</a>
+                                    <a href="#!" class="link-secondary text-decoration-none">Forgot password</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="mt-5 mb-4">Or continue with</p>
+                                <div class="d-flex gap-3 flex-column">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+@* <MudLayout Class="mud-theme-primary">
+
+
+    <MudContainer Style="display: flex; justify-content: center; align-items: center; height: 100vh;" >
+        <MudPaper Elevation="12" Class="mud-width-full mud-max-width-sm mud-rounded-lg p-6" Style="background: white;">
+            <MudCardContent>
+                <MudText Typo="Typo.h4" Class="text-center mb-4" Color="Color.Primary">Login</MudText>
+                <MudText Typo="Typo.body2" Class="text-center mb-2">Don't have an account? <MudLink Href="#">Register</MudLink></MudText>
+
+
+
 
     <EditForm Model="@LoginModel" OnValidSubmit="HandleLogin">
         <DataAnnotationsValidator />
@@ -27,7 +168,7 @@
 
         <div class="form-group">
             <label for="email">Email</label>
-            <InputText id="Email" class="form-control" @bind-Value="LoginModel.Email" />
+            <InputText id="Email" class="form-control"  @bind-Value="LoginModel.Email" />
             <ValidationMessage For="@(() => LoginModel.Email)" />
         </div>
 
@@ -37,45 +178,54 @@
             <ValidationMessage For="@(() => LoginModel.Password)" />
 
         </div>
-        <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    <MudButton Variant="Variant.Filled">Default</MudButton>
+
+        <button type="submit" class="btn btn-primary">Login</button>
 
 
     </EditForm>
 
-    </MudPaper>
-    </MudItem>
-    </MudGrid>
-              
+                    <MudDivider Class="my-4" />
+                    <MudText Typo="Typo.caption" Class="text-center">Validation Summary</MudText>
+                </MudCardContent>
+            </MudPaper>
+        </MudContainer>
+    </MudLayout>
 
-    </MudContainer>
-    </MudPaper>
+ *@
 
-</div>
 
 @code {
     LoginUserDto LoginModel = new LoginUserDto();
     string message = null;
 
-   
+    private bool Loading = false;
+
 
     public async Task HandleLogin()
     {
         try
         {
-        var response = await authService.AuthenticateAsync(LoginModel);
-       
+            Loading = true;
+            var response = await authService.AuthenticateAsync(LoginModel);
+
             if (response)
             {
+                Loading = false;
                 navManager.NavigateTo("/dashboard");
             }
             else
             {
-               message = "Invalid Creditianls";
+                Loading = false;
+                message = "Invalid Creditianls";
                 Console.WriteLine(message);
             }
         }
         catch (Exception ex)
         {
+            Loading = false;
+            message = "Invalid Creditianls";
+            Console.WriteLine(message);
             Console.WriteLine($"An error occurred: {ex.Message}");
         }
     }

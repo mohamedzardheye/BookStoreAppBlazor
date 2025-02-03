@@ -1,4 +1,4 @@
-﻿@page "/authors/search"
+﻿@page "/noval/search"
 @inject IAuthorService authorService
 @inject NavigationManager navManager
 @inject HttpClient http
@@ -232,13 +232,13 @@
             parameters.Add("Id", id.Value);
             parameters.Add("Title", "Update Author");
             parameters.Add("ButtonText", "Update Author");
-            dialog = await dialogService.ShowAsync<CreateAuthorDialog>("Update Author", parameters, _maxWidth);
+            dialog = await dialogService.ShowAsync<CreateNovalDialog>("Update Author", parameters, _maxWidth);
         }
         else
         {
             parameters.Add("Title", "Add New Author");
             parameters.Add("ButtonText", "Register Author");
-            dialog = await dialogService.ShowAsync<CreateAuthorDialog>("Add NewA", parameters, _maxWidth);
+            dialog = await dialogService.ShowAsync<CreateNovalDialog>("Add NewA", parameters, _maxWidth);
         }
 
         var result = await dialog.Result;
