@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
 using BookStoreApp.Api.Data;
 using BookStoreApp.Api.Models;
+
 using BookStoreApp.Api.Models.Novel;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -31,9 +33,6 @@ namespace BookStoreApp.Api.Controllers
 
 
 
-
-      
-
         [HttpGet]
 
         public async Task<List<Trip>> Get()
@@ -41,8 +40,6 @@ namespace BookStoreApp.Api.Controllers
             return await _tripListCollection.Find(new BsonDocument()).SortByDescending(y => y.Id).ToListAsync();
 
         }
-
-
 
 
 
