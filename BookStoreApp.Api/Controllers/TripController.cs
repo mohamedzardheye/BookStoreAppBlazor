@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using BookStoreApp.Api.Data;
 using BookStoreApp.Api.Models;
+<<<<<<< HEAD
 using BookStoreApp.Api.Models.Novel;
+=======
+>>>>>>> fd58a110a9a5b0b4e85ba5eb330271f1bd8f77cd
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -30,10 +33,13 @@ namespace BookStoreApp.Api.Controllers
 
 
 
+<<<<<<< HEAD
 
 
       
 
+=======
+>>>>>>> fd58a110a9a5b0b4e85ba5eb330271f1bd8f77cd
         [HttpGet]
 
         public async Task<List<Trip>> Get()
@@ -43,9 +49,12 @@ namespace BookStoreApp.Api.Controllers
         }
 
 
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> fd58a110a9a5b0b4e85ba5eb330271f1bd8f77cd
         [HttpGet("{id}")]
         public async Task<Trip> Get(string id)
         {
