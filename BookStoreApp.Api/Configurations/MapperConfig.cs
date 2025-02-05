@@ -7,7 +7,7 @@ using BookStoreApp.Api.Models.booking;
 using BookStoreApp.Api.Models.Novel;
 using BookStoreApp.Api.Models.User;
 using Microsoft.AspNetCore.Authorization;
-using Sahal_Projects.Areas.APIs.Model;
+
 
 namespace BookStoreApp.Api.Configurations
 {
@@ -37,19 +37,7 @@ namespace BookStoreApp.Api.Configurations
 
 
 
-
-
             CreateMap<booking_registration, booking_registration_read_only>().ReverseMap();
-
-
-
-
-
-
-
-
-
-
 
 
             CreateMap<NovelCreateDto, Novel>().ReverseMap();

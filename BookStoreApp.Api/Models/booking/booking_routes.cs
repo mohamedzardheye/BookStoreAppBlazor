@@ -1,4 +1,4 @@
-namespace Sahal_Projects.Areas.APIs.Model
+namespace BookStoreApp.Api.Models.booking
 {
     using System;
     using System.Collections.Generic;

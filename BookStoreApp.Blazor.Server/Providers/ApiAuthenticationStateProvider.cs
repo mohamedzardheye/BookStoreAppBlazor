@@ -103,6 +103,7 @@ namespace BookStoreApp.Blazor.Server.Providers
 
             if (string.IsNullOrEmpty(token))
             {
+             //   await LoggedOut();
                 Console.WriteLine("No token found in CheckTokenAsync.");
                 return;
             }
