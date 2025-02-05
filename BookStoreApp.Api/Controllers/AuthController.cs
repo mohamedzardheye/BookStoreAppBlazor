@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using BookStoreApp.Api.Data;
+using BookStoreApp.Api.Models;
 using BookStoreApp.Api.Models.User;
 using BookStoreApp.Api.Static;
 using Microsoft.AspNetCore.Authorization;
@@ -21,6 +22,8 @@ namespace BookStoreApp.Api.Controllers
         private readonly IMapper mapper;
         private readonly UserManager<ApiUser> userManager;
         private readonly IConfiguration configuration;
+
+        private readonly RoleManager<IdentityRole> roleManager;
 
         public AuthController(ILogger<AuthController> 
             logger, IMapper mapper,
@@ -151,5 +154,55 @@ namespace BookStoreApp.Api.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+
+
+
+
+
+
+
+
+        // added roles 
+
+        [HttpGet]
+        [Route("getUserId({id})")]
+        public async Task<ApiUser> GetById(string id)
+        {
+            return await userManager.FindByIdAsync(id);
+
+        }
+
+        [HttpPost]
+        [Route("createRole")]
+        public async Task<CreateRoleDto> AddToRolesAsync(CreateRoleDto role)
+        {
+            var identityRole = mapper.Map<IdentityRole>(role);
+            await roleManager.CreateAsync(identityRole);
+            return role;
+        }
+
+        [HttpPost]
+        [Route("createUserRole")]
+        public async Task<CreateUserRoleDto> AddUserRole(CreateUserRoleDto createUserRole)
+        {
+            var user = await GetById(createUserRole.UserId);
+            await userManager.AddToRoleAsync(user, createUserRole.Role);
+            return createUserRole;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

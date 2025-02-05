@@ -7,6 +7,7 @@ using BookStoreApp.Api.Models.booking;
 using BookStoreApp.Api.Models.Novel;
 using BookStoreApp.Api.Models.User;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 
 namespace BookStoreApp.Api.Configurations
@@ -34,6 +35,10 @@ namespace BookStoreApp.Api.Configurations
 
 
             CreateMap<ApiUser, UserDto>().ReverseMap();
+
+            //CreateMap<IdentityRole, RolesDto>().ReverseMap();
+            CreateMap<IdentityRole, CreateUserRoleDto>().ReverseMap();
+            CreateMap<IdentityRole, CreateRoleDto>().ReverseMap();
 
 
 
