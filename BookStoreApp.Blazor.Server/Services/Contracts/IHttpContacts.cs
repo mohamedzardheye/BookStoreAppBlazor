@@ -9,6 +9,8 @@
         Task Post(string url, T obj);
         Task<T> PostAsync(string url, T obj);
         Task Update(string url, T obj, int id);
+
+        Task UpdateMongoDb(string url, T obj, string id);
         Task Delete(string url, int id);
         Task Delete(string url, string id);
 

@@ -94,6 +94,14 @@ namespace BookStoreApp.Blazor.Server.Services
             await client.PutAsJsonAsync($"{url}{id}", obj);
         }
 
+        public async Task UpdateMongoDb(string url, T obj, string id)
+        {
+            await GetBearerToken();
+            interceptor.MonitorEvent();
+            //interceptor.RegisterEvent();
+            await client.PutAsJsonAsync($"{url}{id}", obj);
+        }
+
         public async Task<T> Get(string url, string id)
         {
             await GetBearerToken();

@@ -6,7 +6,7 @@ namespace BookStoreApp.Blazor.Server.Static
         public static string Prefix = "https://localhost:7039/api";
 
         public static string AuthorsEndPoint = $"{Prefix}/Authors/";
-        public static string NovalsEndPoint = $"{Prefix}/Novels/";
+        public static string NovelsEndPoint = $"{Prefix}/Novels/";
 
     }
 }

@@ -22,7 +22,7 @@
             <div class="ms-auto pageheader-btn">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Areas</li>
+                    <li class="breadcrumb-item active" aria-current="page">Novels</li>
                 </ol>
             </div>
         </div>
@@ -36,7 +36,7 @@
                 @onclick="(()=>OpenCreateForm(null))"
                 Size="Size.Large"
                 Color="Color.Primary">
-                    Add New Author
+                    Add New Novel
                 </MudButton>
 
 
@@ -170,7 +170,7 @@
 
 
                         <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                        @onclick="(()=>OpenCreateForm(id:context.Title))"
+                        @onclick="(()=>OpenCreateForm(id:context.Id))"
                         Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
 
                     </MudTd>
@@ -226,17 +226,17 @@
         if (id != null)
         {
             parameters.Add("Id", id);
-            parameters.Add("Title", "Update Author");
+            parameters.Add("Title", "Update Novel");
 
-            parameters.Add("ButtonText", "Update Author");
-            dialog = await Dialog.ShowAsync<CreateNovalDialog>("Update Author", parameters, _maxWidth);
+            parameters.Add("ButtonText", "Update Novel");
+            dialog = await Dialog.ShowAsync<CreateNovalDialog>("Update Novel", parameters, _maxWidth);
         }
         else
         {
-            parameters.Add("Title", "Add New Author");
-            parameters.Add("ButtonText", "Register Author");
+            parameters.Add("Title", "Add New Novel");
+            parameters.Add("ButtonText", "Register Novel");
 
-            dialog = await Dialog.ShowAsync<CreateNovalDialog>("Add NewA", parameters, _maxWidth);
+            dialog = await Dialog.ShowAsync<CreateNovalDialog>("Add New ", parameters, _maxWidth);
         }
         var result = await dialog.Result;
         await OnInitializedAsync();
@@ -266,8 +266,8 @@
     {
         loading = true;
 
-        Console.WriteLine($"{EndPoints.NovalsEndPoint}");
-        var response = await novelsService.GetAll($"{EndPoints.NovalsEndPoint}");
+        Console.WriteLine($"{EndPoints.NovelsEndPoint}");
+        var response = await novelsService.GetAll($"{EndPoints.NovelsEndPoint}");
         Novals = response;
 
     

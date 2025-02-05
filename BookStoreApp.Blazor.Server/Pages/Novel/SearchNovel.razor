@@ -1,5 +1,4 @@
-﻿@page "/noval/search"
-@inject IAuthorService authorService
+﻿@page "/novels/search"
 @inject NavigationManager navManager
 @inject HttpClient http
 @inject IJSRuntime js
@@ -22,42 +21,47 @@
             <div class="ms-auto pageheader-btn">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Authors</li>
+                    <li class="breadcrumb-item active" aria-current="page">Novels</li>
                 </ol>
             </div>
         </div>
 
         <div class="col-offset-10 col-md-2 mb-3">
             <MudButton Variant="Variant.Filled"
-                       EndIcon="@Icons.Material.Filled.Add"
-                       Class="align-content-lg-end"
-                       @onclick="(() => OpenCreateForm(null))"
-                       Size="Size.Large"
-                       Color="Color.Primary">
-                Add New Author
+            EndIcon="@Icons.Material.Filled.Add"
+            Class="align-content-lg-end"
+            @onclick="(() => OpenCreateForm(null))"
+            Size="Size.Large"
+            Color="Color.Primary">
+                Add New Novel
             </MudButton>
         </div>
 
         <!-- Search block -->
         <div class="card mt-3 border-0">
             <div class="card-body">
-                <EditForm Model="authorFilterDto" OnValidSubmit="handleSubmit">
-                    <DataAnnotationsValidator />
-                    <ValidationSummary />
+            
+
 
                     <div class="row g-2">
                         <div class="col-md-2">
-                            <MudTextField Label="First Name"
-                                          Variant="Variant.Outlined"
-                                          @bind-Value="authorFilterDto.FirstName"
-                                          For="@(() => authorFilterDto.FirstName)" />
+
+
+
+                        <MudSelect @bind-Value="SelectedSearchColumn" Label="Select Search Term" Variant="Variant.Outlined" Clearable>
+                            <MudSelectItem Value="@("Title")">Title</MudSelectItem>
+                            <MudSelectItem Value="@("Summary")">Summary</MudSelectItem>
+                        </MudSelect>
+
+
+
                         </div>
 
                         <div class="col-md-2">
-                            <MudTextField Label="Last Name"
-                                          Variant="Variant.Outlined"
-                                          @bind-Value="authorFilterDto.LastName"
-                                          For="@(() => authorFilterDto.LastName)" />
+                            <MudTextField Label="Search Value"
+                            Variant="Variant.Outlined"
+                            @bind-Value="searchTerm"
+                            />
                         </div>
 
                         <div class="col-md-2">
@@ -76,22 +80,23 @@
 
                         <div class="col-md-2">
                             <MudButton Color="Color.Inherit"
-                                       Size="Size.Large"
-                                       ButtonType="ButtonType.Submit"
-                                       StartIcon="@Icons.Material.Filled.Search"
-                                       Style="background-color:green;color:white;">
+                            Size="Size.Large"
+                            ButtonType="ButtonType.Submit"
+                             @onclick="(() => handleSubmit())"
+                            StartIcon="@Icons.Material.Filled.Search"
+                            Style="background-color:green;color:white;">
                                 Filter
                             </MudButton>
 
                             <MudButton Color="Color.Inherit"
-                                       Size="Size.Large"
-                                       StartIcon="@Icons.Material.Filled.LockReset"
-                                       Style="background-color:red;color:white;">
+                            Size="Size.Large"
+                            StartIcon="@Icons.Material.Filled.LockReset"
+                            Style="background-color:red;color:white;">
                                 Export
                             </MudButton>
                         </div>
                     </div>
-                </EditForm>
+               
             </div>
         </div>
 
@@ -101,50 +106,61 @@
         }
         else
         {
-            <MudTable Items="@Authors"
-                      Dense="true"
-                      Hover="@hover"
-                      SortLabel="Sort By"
-                      @ref="table"
-                      ServerData="loadAuthors"
-                      Bordered="@bordered"
-                      Striped="@striped">
+            <MudTable Items="@Novels"
+            Dense="true"
+            Hover="@hover"
+            SortLabel="Sort By"
+            @ref="table"
+            ServerData="loadNovels"
+            Bordered="@bordered"
+            Striped="@striped">
 
                 <ToolBarContent>
-                    <MudText Typo="Typo.h6">Authors</MudText>
+                    <MudText Typo="Typo.h6">Novels</MudText>
                     <MudSpacer />
                 </ToolBarContent>
 
                 <HeaderContent>
-                    <MudTh>First Name</MudTh>
-                    <MudTh>Last Name</MudTh>
+                    <MudTh>Title</MudTh>
+                    <MudTh>Year </MudTh>
+
+                    <MudTh>Summary </MudTh>
+                    <MudTh>price </MudTh>
                     <MudTh>Action</MudTh>
+
                 </HeaderContent>
 
                 <RowTemplate>
-                    <MudTd DataLabel="firstName">@context.FirstName</MudTd>
-                    <MudTd DataLabel="lastName">@context.LastName</MudTd>
+
+                    <MudTd DataLabel="Title">@context.Title</MudTd>
+                    <MudTd DataLabel="Year">@context.Year</MudTd>
+
+
+
+                    <MudTd DataLabel="summary">@context.Summary</MudTd>
+
+                    <MudTd DataLabel="summary">@context.Price</MudTd>
 
                     <MudTd DataLabel="Actions">
                         <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                       @onclick="(() => Delete(context.Id))"
-                                       Variant="Variant.Outlined"
-                                       Color="Color.Error"
-                                       Size="Size.Small" />
+
+                        Variant="Variant.Outlined"
+                        Color="Color.Error"
+                        Size="Size.Small" />
 
                         <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                       @onclick="(() => OpenCreateForm(id: context.Id))"
-                                       Variant="Variant.Outlined"
-                                       Color="Color.Primary"
-                                       Size="Size.Small" />
+                        @onclick="(() => OpenCreateForm(id: context.Id))"
+                        Variant="Variant.Outlined"
+                        Color="Color.Primary"
+                        Size="Size.Small" />
                     </MudTd>
                 </RowTemplate>
 
                 <PagerContent>
                     <MudTablePager RowsPerPageString="@QuantityPerPage"
-                                   InfoFormat="@infoFormat"
-                                   TotalItems="@totalPageQuantity"
-                                   PageSizeOptions="new int[] { 10, 60, 100, 200 }" />
+                    InfoFormat="@infoFormat"
+                    TotalItems="@totalPageQuantity"
+                    PageSizeOptions="new int[] { 10, 60, 100, 200 }" />
 
 
                 </PagerContent>
@@ -156,13 +172,15 @@
 
 @inject NavigationManager navManager
 @inject IDialogService dialogService
-@inject IHttpContacts<PagedResult<AuthorReadOnlyDto>> authorsService
+@inject IHttpContacts<PagedResult<NovelReadOnlyDto>> novelsService
 @inject HttpInerceptorService _interceptor
 
 @code {
     private readonly DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
     @inject ISnackbar snackBar
 
+    private string SelectedSearchColumn { get; set; } = "Title"; // Default selection
+    private string? searchTerm;
 
 
     private bool dense = false;
@@ -179,27 +197,27 @@
 
 
 
-    private MudTable<AuthorReadOnlyDto> table;
+    private MudTable<NovelReadOnlyDto> table;
     private AuthorFilterDto authorFilterDto = new AuthorFilterDto();
-    private List<AuthorReadOnlyDto> Authors;
-    private Response<List<AuthorReadOnlyDto>> response = new Response<List<AuthorReadOnlyDto>> { Success = true };
+    private List<NovelReadOnlyDto> Novels;
+    private Response<List<NovelReadOnlyDto>> response = new Response<List<NovelReadOnlyDto>> { Success = true };
 
 
 
 
     protected override async Task OnInitializedAsync()
     {
-        await loadAuthors(new TableState(), CancellationToken.None);
+        await loadNovels(new TableState(), CancellationToken.None);
     }
 
     async Task handleSubmit()
     {
-        await loadAuthors(new TableState(), CancellationToken.None);
+        await loadNovels(new TableState(), CancellationToken.None);
     }
 
-    public async Task<TableData<AuthorReadOnlyDto>> loadAuthors(TableState state, CancellationToken cancellationToken)
+    public async Task<TableData<NovelReadOnlyDto>> loadNovels(TableState state, CancellationToken cancellationToken)
     {
-        Console.WriteLine("Loading Authors");
+        Console.WriteLine("Loading Novels");
 
         loading = true;
         authorFilterDto.Page = 1;
@@ -208,11 +226,15 @@
         _interceptor.MonitorEvent();
 
 
-        Console.WriteLine($"{EndPoints.AuthorsEndPoint}Search?FirstName={authorFilterDto.FirstName}&LastName={authorFilterDto.LastName}&Page={state.Page + 1}&QuantityPerPage={state.PageSize}");
+        Console.WriteLine($"{EndPoints.NovelsEndPoint}Search?searchColumn={SelectedSearchColumn}&searchTerm={searchTerm}&Page={state.Page + 1}&QuantityPerPage={QuantityPerPage}");
+        
         var response =
-            await authorsService.GetPagined($"{EndPoints.AuthorsEndPoint}Search?FirstName={authorFilterDto.FirstName}&LastName={authorFilterDto.LastName}&Page={state.Page + 1}&QuantityPerPage={QuantityPerPage}");
+            await novelsService.GetPagined($"{EndPoints.NovelsEndPoint}Search?searchColumn={SelectedSearchColumn}&searchTerm={searchTerm}&Page={state.Page + 1}&QuantityPerPage={QuantityPerPage}");
 
-        Authors = response.Data;
+        Novels = response.Data;
+
+        Console.WriteLine(Novels);
+
         totalPageQuantity = response.totalRecords;
         QuantityPerPage = response.quantityPerPage.ToString();
         infoFormat = $"Showing {QuantityPerPage} to {response.totalRecords} of {totalPageQuantity}";
@@ -220,25 +242,25 @@
         loading = false;
 
 
-        return new TableData<AuthorReadOnlyDto>() { Items = response.Data, TotalItems = response.totalRecords };
+        return new TableData<NovelReadOnlyDto>() { Items = response.Data, TotalItems = response.totalRecords };
     }
 
-    private async Task OpenCreateForm(int? id)
+    private async Task OpenCreateForm(string? id)
     {
         IDialogReference dialog;
         var parameters = new DialogParameters();
         if (id != null)
         {
-            parameters.Add("Id", id.Value);
-            parameters.Add("Title", "Update Author");
-            parameters.Add("ButtonText", "Update Author");
-            dialog = await dialogService.ShowAsync<CreateNovalDialog>("Update Author", parameters, _maxWidth);
+            parameters.Add("Id", id);
+            parameters.Add("Title", "Update Novel");
+            parameters.Add("ButtonText", "Update Novel");
+            dialog = await dialogService.ShowAsync<CreateNovalDialog>("Update Novel", parameters, _maxWidth);
         }
         else
         {
-            parameters.Add("Title", "Add New Author");
-            parameters.Add("ButtonText", "Register Author");
-            dialog = await dialogService.ShowAsync<CreateNovalDialog>("Add NewA", parameters, _maxWidth);
+            parameters.Add("Title", "Add New Novel");
+            parameters.Add("ButtonText", "Register Novel");
+            dialog = await dialogService.ShowAsync<CreateNovalDialog>("Add New Novel", parameters, _maxWidth);
         }
 
         var result = await dialog.Result;
@@ -261,7 +283,7 @@
 
         if (!result.Canceled)
         {
-            await authorService.DeleteAuthor(id);
+            //await novelsService.Delete(id);
             snackBar.Add("Successfully Deleted Record", Severity.Error);
             await table.ReloadServerData();
         }

@@ -61,8 +61,34 @@ namespace BookStoreApp.Api.Controllers
         }
 
 
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<NovelCreateDto>> Put(string id, [FromBody] NovelCreateDto novelCreateDto)
+        {
+            // Map the incoming DTO to a novel object
+            var novelDto = mapper.Map<Novel>(novelCreateDto);
+
+            // Set the ID of the novel to ensure it matches the one in the request
+            novelDto.Id = id;
+
+            // Find the existing novel by Id and update it
+            var result = await _novelListCollection.ReplaceOneAsync(
+                filter: n => n.Id == id,
+                replacement: novelDto
+            );
+
+            if (result.MatchedCount == 0)
+            {
+                return NotFound($"Novel with ID {id} not found.");
+            }
+
+            // Return the updated novel
+            return Ok(novelDto);
+        }
+
+
         [HttpGet("search")]
-        public async Task<ActionResult<IEnumerable<NovelReadOnlyDto>>> GetSearchNovels(string? searchTerm, int pageNumber = 1, int pageSize = 10)
+        public async Task<ActionResult<IEnumerable<NovelReadOnlyDto>>> GetSearchNovels(string? searchColumn, string? searchTerm, int pageNumber = 1, int pageSize = 10)
         {
             try
             {
@@ -71,12 +97,10 @@ namespace BookStoreApp.Api.Controllers
 
                 FilterDefinition<Novel> filter = FilterDefinition<Novel>.Empty; // Default: No filter, return all
 
-                if (!string.IsNullOrEmpty(searchTerm))
+                if (!string.IsNullOrEmpty(searchTerm) && !string.IsNullOrEmpty(searchColumn))
                 {
-                    filter = Builders<Novel>.Filter.Or(
-                        Builders<Novel>.Filter.Regex(n => n.Summary, new BsonRegularExpression($".*{searchTerm}.*", "i")),
-                        Builders<Novel>.Filter.Regex(n => n.Title, new BsonRegularExpression($".*{searchTerm}.*", "i"))
-                    );
+                    var field = new StringFieldDefinition<Novel>(searchColumn); // Dynamically access property
+                    filter = Builders<Novel>.Filter.Regex(field, new BsonRegularExpression($".*{searchTerm}.*", "i"));
                 }
 
                 var novels = await _novelListCollection
@@ -95,8 +119,7 @@ namespace BookStoreApp.Api.Controllers
                     PageNumber = pageNumber,
                     PageSize = pageSize,
                     TotalRecords = totalCount,
-                    TotalPages = (int)Math.Ceiling((double)totalCount / pageSize),
-                    Novels = novelDtos
+                    data = novelDtos
                 };
 
                 return Ok(response);

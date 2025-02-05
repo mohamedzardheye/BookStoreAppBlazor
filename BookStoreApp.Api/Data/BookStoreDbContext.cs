@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using BookStoreApp.Api.Models.booking;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Sahal_Projects.Areas.APIs.Model;
+
 
 namespace BookStoreApp.Api.Data;
 
