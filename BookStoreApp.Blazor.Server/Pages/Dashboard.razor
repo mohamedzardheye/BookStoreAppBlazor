@@ -2,26 +2,26 @@
 
 
 
-  <div class="side-app">
-					 <!-- CONTAINER -->
-					 <div class="main-container container-fluid">
-						<!-- PAGE-HEADER -->
-						<div class="page-header">
-							<div>
+<div class="side-app">
+	<!-- CONTAINER -->
+	<div class="main-container container-fluid">
+		<!-- PAGE-HEADER -->
+		<div class="page-header">
+			<div>
 				<h1 class="page-title">  @userId</h1>
-							</div>
-							<div class="ms-auto pageheader-btn">
-								<ol class="breadcrumb">
-									<li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
-									<li class="breadcrumb-item active" aria-current="page">
+			</div>
+			<div class="ms-auto pageheader-btn">
+				<ol class="breadcrumb">
+					<li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
+					<li class="breadcrumb-item active" aria-current="page">
 
 						@userId
 
-                      
-									</li>
-								</ol>
-							</div>
-						</div>
+
+					</li>
+				</ol>
+			</div>
+		</div>
 
 
 
@@ -149,95 +149,95 @@
 
 
 
+		</div>
+
+
+
+		<!---   ->
+
+
+
+		<div class="row">
+
+			<div class="col-lg-4 col-sm-12 col-md-6 col-xl-3">
+				<MudChart ChartType="ChartType.Donut" Width="300px" Height="300px" InputData="@data" InputLabels="@labels">
+					<CustomGraphics>
+						<text class="donut-inner-text" x="47%" y="35%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Total</text>
+						<text class="donut-inner-text" x="47%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@data.Sum().ToString()</text>
+					</CustomGraphics>
+				</MudChart>
+			</div>
+
+			<div class="col-sm-1"></div>
+
+
+			<div class="col-lg-4 col-sm-12 col-md-6 col-xl-3">
+				<MudChart ChartType="ChartType.StackedBar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
+			</div>
+
+
+			<div class="col-sm-1"></div>
+			<div class="col-lg-4 col-sm-12 col-md-6 col-xl-3">
+				<MudChart ChartType="ChartType.Line" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
 			</div>
 
 
 
-			<!---   ->
 
 
-
-                        <div class="row">
-
-							<div class="col-lg-4 col-sm-12 col-md-6 col-xl-3">
-								<MudChart ChartType="ChartType.Donut" Width="300px" Height="300px" InputData="@data" InputLabels="@labels">
-							<CustomGraphics>
-								<text class="donut-inner-text" x="47%" y="35%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Total</text>
-								<text class="donut-inner-text" x="47%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@data.Sum().ToString()</text>
-							</CustomGraphics>
-						</MudChart>
-						</div>
-
-							<div class="col-sm-1"></div>
+			<div class="row">
 
 
-							<div class="col-lg-4 col-sm-12 col-md-6 col-xl-3">
-							<MudChart ChartType="ChartType.StackedBar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
-							</div>
+				<div class="col-lg-4 col-sm-12 col-md-6 col-xl-3">
+					<MudChart ChartType="ChartType.Bar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
+				</div>
 
 
-								<div class="col-sm-1"></div>
-								<div class="col-lg-4 col-sm-12 col-md-6 col-xl-3">
-							<MudChart ChartType="ChartType.Line" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
-						</div>
+				<div class="col-sm-1"></div>
+
+				<div class="col-lg-4 col-sm-12 col-md-6 col-xl-3">
+					<MudChart ChartType="ChartType.Donut" Width="300px" Height="300px" InputData="@data" InputLabels="@labels">
+						<CustomGraphics>
+							<text class="donut-inner-text" x="47%" y="35%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Total</text>
+							<text class="donut-inner-text" x="47%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@data.Sum().ToString()</text>
+						</CustomGraphics>
+					</MudChart>
+
+				</div>
 
 
 
 
 
-                        <div class="row">
-
-						
-							<div class="col-lg-4 col-sm-12 col-md-6 col-xl-3">
-							<MudChart ChartType="ChartType.Bar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
-							</div>
-
-
-								<div class="col-sm-1"></div>
-
-						<div class="col-lg-4 col-sm-12 col-md-6 col-xl-3">
-									<MudChart ChartType="ChartType.Donut" Width="300px" Height="300px" InputData="@data" InputLabels="@labels">
-							<CustomGraphics>
-								<text class="donut-inner-text" x="47%" y="35%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="2">Total</text>
-								<text class="donut-inner-text" x="47%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="black" font-family="Helvetica" font-size="5">@data.Sum().ToString()</text>
-							</CustomGraphics>
-						</MudChart>
-
-						</div>
+				<div class="col-sm-1"></div>
 
 
 
 
 
-							<div class="col-sm-1"></div>
-
-						
-
-
-
-							<div class="col-lg-4 col-sm-12 col-md-6 col-xl-3">
-							<MudChart ChartType="ChartType.Bar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
-							</div>
-
-
-								
-							
-					
+				<div class="col-lg-4 col-sm-12 col-md-6 col-xl-3">
+					<MudChart ChartType="ChartType.Bar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
+				</div>
 
 
 
 
 
-							</div>
 
 
 
-							</div>
+
+
+			</div>
 
 
 
-			<!---  ->
-		
+		</div>
+
+
+
+		<!---  ->
+
 		<!-- ROW-1 END-->
 
 
@@ -245,10 +245,10 @@
 
 
 
-        <!-- ROW-1 OPEN -->
+		<!-- ROW-1 OPEN -->
 
-						</div>
-						</div>
+	</div>
+</div>
 
 
 
@@ -268,8 +268,8 @@
 
 
 
-	 public double[] data = { 25, 77, 28, 5 };
-    public string[] labels = { "Oil", "Coal", "Gas", "Biomass" };
+	public double[] data = { 25, 77, 28, 5 };
+	public string[] labels = { "Oil", "Coal", "Gas", "Biomass" };
 
 	private string userId;
 	private async Task GetClaimsPrincipalData()
@@ -283,6 +283,11 @@
 				user.FindFirst(c => c.Type == "uid")?.Value;
 
 		}
+		else {
+			navManager.NavigateTo("users/login");
+		}
+
+		
 
 	}
 }
