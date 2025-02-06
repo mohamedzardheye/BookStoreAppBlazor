@@ -272,22 +272,50 @@
 	public string[] labels = { "Oil", "Coal", "Gas", "Biomass" };
 
 	private string userId;
+
+
+
+	protected override async Task OnInitializedAsync()
+	{
+
+		await GetClaimsPrincipalData();
+
+	}
 	private async Task GetClaimsPrincipalData()
 	{
 		var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
 		var user = authState.User;
-		if (user!.Identity.IsAuthenticated)
+
+
+		var claims = user.Claims;
+		foreach (var claim in claims)
 		{
+			Console.WriteLine($"{claim.Type}: {claim.Value}");
 
-			userId =
-				user.FindFirst(c => c.Type == "uid")?.Value;
 
 		}
-		else {
-			navManager.NavigateTo("users/login");
+
+		if (user.Identity.IsAuthenticated)
+		{
+			// Retrieve the 'sub' claim (which is typically used for the user identifier or email)
+			var subClaim = user.FindFirst("sub");
+			if (subClaim != null)
+			{
+				userId = subClaim.Value;  // Use the 'sub' claim (email or user identifier)
+			}
+			else
+			{
+				userId = "Name not available in claims";
+
+			}
 		}
+		else
+		{
+			userId = "Guest";
+			navManager.NavigateTo("user/login" );
 
-		
 
+		}
 	}
+}
 }

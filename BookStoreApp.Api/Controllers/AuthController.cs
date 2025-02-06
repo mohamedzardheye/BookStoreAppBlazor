@@ -178,6 +178,10 @@ namespace BookStoreApp.Api.Controllers
         public async Task<CreateRoleDto> AddToRolesAsync(CreateRoleDto role)
         {
             var identityRole = mapper.Map<IdentityRole>(role);
+
+
+            Guid roleId = Guid.NewGuid();
+            role.ConcurrencyStamp = roleId.ToString();
             await roleManager.CreateAsync(identityRole);
             return role;
         }
