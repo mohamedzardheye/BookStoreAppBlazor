@@ -15,13 +15,24 @@
                     }
                     else
                     {
-                        <div class="alert alert-warning">
-                            <p><strong>Authentication required</strong></p>
-                            <p>You need to authenticate to access this page.</p>
+                        <div class="page" style="color:black; margin-top:8%;">
+                            <!-- PAGE-CONTENT OPEN -->
+                            <div class="page-content error-page error2">
+                                <div class="container text-center">
+                                    <div class="error-templates">
+                                        <h1 class="text-black mb-2">401<span class="fs-20"> UnAuthorized</span></h1>
+                                        <h5 class="error-details text-black">
+                                            You don't have permission to access this page!
+                                        </h5>
+                                        <p>You're not authorized to view this page</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- PAGE-CONTENT OPEN CLOSED -->
                         </div>
-                    })
+                    }
 
-                    <p>You're not authorized to view this page</p>
+                   
                 </NotAuthorized>
             </AuthorizeRouteView>
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />

@@ -3,6 +3,7 @@ using BookStoreApp.Api.Data;
 using BookStoreApp.Api.Models;
 using BookStoreApp.Api.Models.Novel;
 using BookStoreApp.Api.Static;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,6 +15,8 @@ namespace BookStoreApp.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
+
     public class NovelsController : ControllerBase
     {
         private readonly MongoDBSettings databaseSettings;
@@ -21,7 +24,7 @@ namespace BookStoreApp.Api.Controllers
         private readonly IMapper mapper;
 
         public NovelsController(IOptions<MongoDBSettings> databaseOptions,
-      IMongoDatabase mongoDatabase, IMapper mapper)
+         IMongoDatabase mongoDatabase, IMapper mapper)
         {
             databaseSettings = databaseOptions.Value;
             _novelListCollection = mongoDatabase.GetCollection<Novel>("Novel");
@@ -40,7 +43,7 @@ namespace BookStoreApp.Api.Controllers
             return CreatedAtAction(nameof(Get), new { id = novelDto.Id }, novelDto);
         }
 
-
+        [Authorize(Roles = "User")]
         [HttpGet]
 
         public async Task<ActionResult<IEnumerable<NovelReadOnlyDto>>> Get()
@@ -86,6 +89,7 @@ namespace BookStoreApp.Api.Controllers
             return Ok(novelDto);
         }
 
+        [Authorize(Roles = "admin")]
 
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<NovelReadOnlyDto>>> GetSearchNovels(string? searchColumn, string? searchTerm, int pageNumber = 1, int pageSize = 10)
@@ -119,7 +123,7 @@ namespace BookStoreApp.Api.Controllers
                     PageNumber = pageNumber,
                     PageSize = pageSize,
                     TotalRecords = totalCount,
-                    data = novelDtos
+                    Data = novelDtos
                 };
 
                 return Ok(response);

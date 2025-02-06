@@ -28,7 +28,9 @@ namespace BookStoreApp.Api.Controllers
         public AuthController(ILogger<AuthController> 
             logger, IMapper mapper,
             UserManager<ApiUser> userManager,
-            IConfiguration configuration
+            IConfiguration configuration,
+            RoleManager<IdentityRole> roleManager
+      
 
 
             )
@@ -37,6 +39,8 @@ namespace BookStoreApp.Api.Controllers
             this.mapper = mapper;
             this.userManager = userManager;
             this.configuration = configuration;
+            this.roleManager = roleManager;
+
         }
 
 
@@ -175,22 +179,35 @@ namespace BookStoreApp.Api.Controllers
 
         [HttpPost]
         [Route("createRole")]
-        public async Task<CreateRoleDto> AddToRolesAsync(CreateRoleDto role)
+        public async Task<IActionResult> AddToRolesAsync([FromBody] CreateRoleDto role)
         {
+            if (role == null || string.IsNullOrWhiteSpace(role.Name))
+            {
+                return BadRequest("Role data is required.");
+            }
+
             var identityRole = mapper.Map<IdentityRole>(role);
+            identityRole.Id = Guid.NewGuid().ToString();
+            identityRole.NormalizedName = role.Name.ToUpper();
+            identityRole.ConcurrencyStamp = Guid.NewGuid().ToString();
 
+            Console.WriteLine(identityRole);
+            var result = await roleManager.CreateAsync(identityRole);
 
-            Guid roleId = Guid.NewGuid();
-            role.ConcurrencyStamp = roleId.ToString();
-            await roleManager.CreateAsync(identityRole);
-            return role;
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            return Ok(role);
         }
+
 
         [HttpPost]
         [Route("createUserRole")]
         public async Task<CreateUserRoleDto> AddUserRole(CreateUserRoleDto createUserRole)
         {
-            var user = await GetById(createUserRole.UserId);
+            var user = await GetById(createUserRole.userId);
             await userManager.AddToRoleAsync(user, createUserRole.Role);
             return createUserRole;
         }

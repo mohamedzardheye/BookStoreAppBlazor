@@ -60,20 +60,20 @@ public partial class BookStoreDbContext : IdentityDbContext<ApiUser>
 
 
         modelBuilder.Entity<IdentityRole>().HasData(
-            //new IdentityRole
-            //{
-            //    Name = "User",
-            //    NormalizedName = "USER",
-            //    Id = "9cac6922-ba24-400c-80ee-c4e941159a0b"
+            new IdentityRole
+            {
+                Name = "User",
+                NormalizedName = "USER",
+                Id = "9cac6922-ba24-400c-80ee-c4e941159a0b"
 
-            //},
-            //  new IdentityRole
-            //  {
-            //      Name = "Admin",
-            //      NormalizedName = "ADMIN",
-            //      Id = "cd2e52c4-4e26-48b6-9d23-ac77456d91f8"
+            },
+              new IdentityRole
+              {
+                  Name = "Admin",
+                  NormalizedName = "ADMIN",
+                  Id = "cd2e52c4-4e26-48b6-9d23-ac77456d91f8"
 
-            //  }
+              }
               );
 
         var hasher = new PasswordHasher<ApiUser>();

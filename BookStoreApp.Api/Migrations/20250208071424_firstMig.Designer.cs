@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BookStoreApp.Api.Migrations
 {
     [DbContext(typeof(BookStoreDbContext))]
-    [Migration("20250201172645_addedbookingTwothreekka")]
-    partial class addedbookingTwothreekka
+    [Migration("20250208071424_firstMig")]
+    partial class firstMig
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -166,6 +166,169 @@ namespace BookStoreApp.Api.Migrations
                     b.ToTable("Books");
                 });
 
+            modelBuilder.Entity("BookStoreApp.Api.Models.booking.booking_registration", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<string>("Address")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Arrival")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Bus_name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("CurrencyType")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Departure")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("DepartureDate")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PassengerName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int?>("PassengerPhoneNumber")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PaymentType")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Seats")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
+
+                    b.Property<string>("TaxiFare")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("TripStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UpdateSeats")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("arrivalTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("bookingId")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("created_by")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("created_on")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("departureTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("isTransit")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("messageType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("route_id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("transitCity")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("id");
+
+                    b.ToTable("booking_registration");
+                });
+
+            modelBuilder.Entity("BookStoreApp.Api.Models.booking.booking_routes", b =>
+                {
+                    b.Property<int>("route_id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("route_id"));
+
+                    b.Property<string>("CurrencyType")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("board_point")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("board_time")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("board_time_transit")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("bus_name")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("created_by")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("created_date")
+                        .HasColumnType("date");
+
+                    b.Property<DateTime?>("created_on")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("drop_point")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime?>("drop_time")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("isTransit")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal?>("price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("route_date")
+                        .HasColumnType("date");
+
+                    b.Property<string>("transitCity")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("route_id");
+
+                    b.ToTable("booking_routes");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -191,6 +354,20 @@ namespace BookStoreApp.Api.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "9cac6922-ba24-400c-80ee-c4e941159a0b",
+                            Name = "User",
+                            NormalizedName = "USER"
+                        },
+                        new
+                        {
+                            Id = "cd2e52c4-4e26-48b6-9d23-ac77456d91f8",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -297,105 +474,6 @@ namespace BookStoreApp.Api.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
-                });
-
-            modelBuilder.Entity("Sahal_Projects.Areas.APIs.Model.booking_registration", b =>
-                {
-                    b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
-
-                    b.Property<string>("Address")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<decimal>("Amount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Arrival")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Bus_name")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("CurrencyType")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Departure")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime?>("DepartureDate")
-                        .HasColumnType("date");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PassengerName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<int?>("PassengerPhoneNumber")
-                        .HasColumnType("int");
-
-                    b.Property<string>("PaymentType")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("Seats")
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<string>("TaxiFare")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int?>("TripStatus")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UpdateSeats")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("arrivalTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("bookingId")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<string>("created_by")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime?>("created_on")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("departureTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("isTransit")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("messageType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("route_id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("transitCity")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("id");
-
-                    b.ToTable("booking_registration");
                 });
 
             modelBuilder.Entity("BookStoreApp.Api.Data.Book", b =>

@@ -7,6 +7,8 @@
 
 @inject IHttpContacts<AuthorReadOnlyDto> authorsService
 
+@attribute [Authorize(Roles = Roles.user)]
+
 @if (response.Success == false)
 {
     <div class="alert alert-danger">
@@ -34,6 +36,9 @@
         </div>
 
         <!-- button to new author-->
+        
+          <AuthorizeView Roles = "admin">
+
         <div class="col-offset-10 col-md-2 mb-3">
             <div class="btn-list">
                 <MudButton Variant="Variant.Filled"
@@ -49,6 +54,8 @@
 
             </div>
         </div>
+
+        </AuthorizeView>
 
 
 
@@ -168,17 +175,28 @@
                     <MudTd DataLabel="firstName">@context.FirstName</MudTd>
                     <MudTd DataLabel="lastName">@context.LastName</MudTd>
 
-                    <MudTd DataLabel="Actions">
 
-                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                        Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" />
+                       
+             
+               
+                  <MudTd DataLabel="Actions">
+
+                  
+                          <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                                         Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" />
+                  
+                  
 
 
-                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                        @onclick="(()=>OpenCreateForm(id:context.Id))"
-                        Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
+                      <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                      @onclick="(()=>OpenCreateForm(id:context.Id))"
+                      Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
+                  
+                  </MudTd>
 
-                    </MudTd>
+             
+           
+
                 </RowTemplate>
                 <PagerContent>
                     <MudTablePager PageSizeOptions="new int[] { 30, 40, 50, 100 }" />

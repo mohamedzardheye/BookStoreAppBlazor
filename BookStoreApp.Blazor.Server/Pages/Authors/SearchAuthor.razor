@@ -1,4 +1,5 @@
 ﻿@page "/authors/search"
+@using Newtonsoft.Json
 @inject IAuthorService authorService
 @inject NavigationManager navManager
 @inject HttpClient http
@@ -29,11 +30,11 @@
 
         <div class="col-offset-10 col-md-2 mb-3">
             <MudButton Variant="Variant.Filled"
-                       EndIcon="@Icons.Material.Filled.Add"
-                       Class="align-content-lg-end"
-                       @onclick="(() => OpenCreateForm(null))"
-                       Size="Size.Large"
-                       Color="Color.Primary">
+            EndIcon="@Icons.Material.Filled.Add"
+            Class="align-content-lg-end"
+            @onclick="(() => OpenCreateForm(null))"
+            Size="Size.Large"
+            Color="Color.Primary">
                 Add New Author
             </MudButton>
         </div>
@@ -48,16 +49,16 @@
                     <div class="row g-2">
                         <div class="col-md-2">
                             <MudTextField Label="First Name"
-                                          Variant="Variant.Outlined"
-                                          @bind-Value="authorFilterDto.FirstName"
-                                          For="@(() => authorFilterDto.FirstName)" />
+                            Variant="Variant.Outlined"
+                            @bind-Value="authorFilterDto.FirstName"
+                            For="@(() => authorFilterDto.FirstName)" />
                         </div>
 
                         <div class="col-md-2">
                             <MudTextField Label="Last Name"
-                                          Variant="Variant.Outlined"
-                                          @bind-Value="authorFilterDto.LastName"
-                                          For="@(() => authorFilterDto.LastName)" />
+                            Variant="Variant.Outlined"
+                            @bind-Value="authorFilterDto.LastName"
+                            For="@(() => authorFilterDto.LastName)" />
                         </div>
 
                         <div class="col-md-2">
@@ -76,17 +77,17 @@
 
                         <div class="col-md-2">
                             <MudButton Color="Color.Inherit"
-                                       Size="Size.Large"
-                                       ButtonType="ButtonType.Submit"
-                                       StartIcon="@Icons.Material.Filled.Search"
-                                       Style="background-color:green;color:white;">
+                            Size="Size.Large"
+                            ButtonType="ButtonType.Submit"
+                            StartIcon="@Icons.Material.Filled.Search"
+                            Style="background-color:green;color:white;">
                                 Filter
                             </MudButton>
 
                             <MudButton Color="Color.Inherit"
-                                       Size="Size.Large"
-                                       StartIcon="@Icons.Material.Filled.LockReset"
-                                       Style="background-color:red;color:white;">
+                            Size="Size.Large"
+                            StartIcon="@Icons.Material.Filled.LockReset"
+                            Style="background-color:red;color:white;">
                                 Export
                             </MudButton>
                         </div>
@@ -102,13 +103,13 @@
         else
         {
             <MudTable Items="@Authors"
-                      Dense="true"
-                      Hover="@hover"
-                      SortLabel="Sort By"
-                      @ref="table"
-                      ServerData="loadAuthors"
-                      Bordered="@bordered"
-                      Striped="@striped">
+            Dense="true"
+            Hover="@hover"
+            SortLabel="Sort By"
+            @ref="table"
+            ServerData="loadAuthors"
+            Bordered="@bordered"
+            Striped="@striped">
 
                 <ToolBarContent>
                     <MudText Typo="Typo.h6">Authors</MudText>
@@ -127,24 +128,24 @@
 
                     <MudTd DataLabel="Actions">
                         <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                       @onclick="(() => Delete(context.Id))"
-                                       Variant="Variant.Outlined"
-                                       Color="Color.Error"
-                                       Size="Size.Small" />
+                        @onclick="(() => Delete(context.Id))"
+                        Variant="Variant.Outlined"
+                        Color="Color.Error"
+                        Size="Size.Small" />
 
                         <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                                       @onclick="(() => OpenCreateForm(id: context.Id))"
-                                       Variant="Variant.Outlined"
-                                       Color="Color.Primary"
-                                       Size="Size.Small" />
+                        @onclick="(() => OpenCreateForm(id: context.Id))"
+                        Variant="Variant.Outlined"
+                        Color="Color.Primary"
+                        Size="Size.Small" />
                     </MudTd>
                 </RowTemplate>
 
                 <PagerContent>
                     <MudTablePager RowsPerPageString="@QuantityPerPage"
-                                   InfoFormat="@infoFormat"
-                                   TotalItems="@totalPageQuantity"
-                                   PageSizeOptions="new int[] { 10, 60, 100, 200 }" />
+                    InfoFormat="@infoFormat"
+                    TotalItems="@totalPageQuantity"
+                    PageSizeOptions="new int[] { 10, 60, 100, 200 }" />
 
 
                 </PagerContent>
@@ -219,8 +220,9 @@
 
         loading = false;
 
+       Console.WriteLine(JsonConvert.SerializeObject(Authors));
 
-        return new TableData<AuthorReadOnlyDto>() { Items = response.Data, TotalItems = response.totalRecords };
+    return new TableData<AuthorReadOnlyDto>() { Items = response.Data, TotalItems = response.totalRecords };
     }
 
     private async Task OpenCreateForm(int? id)

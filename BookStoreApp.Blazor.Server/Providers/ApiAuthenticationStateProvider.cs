@@ -103,7 +103,15 @@ namespace BookStoreApp.Blazor.Server.Providers
 
             if (string.IsNullOrEmpty(token))
             {
-             //   await LoggedOut();
+                //   await LoggedOut();
+
+                var currentUrl = navManager.Uri;
+
+                if (!currentUrl.Contains("/user/login"))
+                {
+                    navManager.NavigateTo("/user/login", forceLoad: true);
+
+                }
                 Console.WriteLine("No token found in CheckTokenAsync.");
                 return;
             }

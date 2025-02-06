@@ -6,12 +6,12 @@
 @inject HttpInerceptorService _interceptor
 
 @implements IDisposable
-@if (response.Success == false)
+@* @if (response.Success == false)
 {
     <div class="alert alert-danger">
         <p><em>@response.Message</em></p>
     </div>
-}
+} *@
 
 <div class="side-app">
     <!-- CONTAINER -->
@@ -194,7 +194,7 @@
     private MudTable<NovelReadOnlyDto> table;
     private AuthorFilterDto authorFilterDto = new AuthorFilterDto();
     private List<NovelReadOnlyDto> Novels;
-    private Response<List<NovelReadOnlyDto>> response = new Response<List<NovelReadOnlyDto>> { Success = true };
+    //private Response<List<NovelReadOnlyDto>> response = new Response<List<NovelReadOnlyDto>> { Success = true };
 
 
 
