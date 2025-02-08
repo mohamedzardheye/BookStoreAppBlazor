@@ -1,5 +1,6 @@
 ﻿@page "/authors/index"
-@inject IAuthorService authorService;
+@using BookStoreApp.Blazor.Server.Providers
+
 
 @inject NavigationManager navManager
 
@@ -36,24 +37,24 @@
         </div>
 
         <!-- button to new author-->
-        
-          <AuthorizeView Roles = "admin">
 
-        <div class="col-offset-10 col-md-2 mb-3">
-            <div class="btn-list">
-                <MudButton Variant="Variant.Filled"
-                EndIcon="@Icons.Material.Filled.Add"
-                Class="align-content-lg-end"
-                @onclick="(()=>OpenCreateForm(null))"
-                Size="Size.Large"
-                Color="Color.Primary">
-                    Add New Author
-                </MudButton>
+        <AuthorizeView Roles = "admin">
+
+            <div class="col-offset-10 col-md-2 mb-3">
+                <div class="btn-list">
+                    <MudButton Variant="Variant.Filled"
+                    EndIcon="@Icons.Material.Filled.Add"
+                    Class="align-content-lg-end"
+                    @onclick="(()=>OpenCreateForm(null))"
+                    Size="Size.Large"
+                    Color="Color.Primary">
+                        Add New Author
+                    </MudButton>
 
 
 
+                </div>
             </div>
-        </div>
 
         </AuthorizeView>
 
@@ -143,9 +144,6 @@
 
 
 
-
-
-
             <!-- PAGE-HEADER END -->
             <MudTable Items="@Authors"
             Dense="true"
@@ -176,26 +174,31 @@
                     <MudTd DataLabel="lastName">@context.LastName</MudTd>
 
 
-                       
-             
-               
-                  <MudTd DataLabel="Actions">
-
-                  
-                          <MudIconButton Icon="@Icons.Material.Filled.Delete"
-                                         Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" />
-                  
-                  
 
 
-                      <MudIconButton Icon="@Icons.Material.Filled.Edit"
-                      @onclick="(()=>OpenCreateForm(id:context.Id))"
-                      Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
-                  
-                  </MudTd>
+                    @if (isUserAdmin)
+                    {
 
-             
-           
+
+                        <MudTd DataLabel="Actions">
+
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                            Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" />
+
+
+
+
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                            @onclick="(()=>OpenCreateForm(id:context.Id))"
+                            Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
+
+                        </MudTd>
+
+
+                    }
+
+
+
 
                 </RowTemplate>
                 <PagerContent>
@@ -218,8 +221,15 @@
 </div>
 
 
+    @inject AuthenticationStateProvider authenticationStateProvider
+    @inject NavigationManager navManager
+
 
 @code {
+    private bool isUserAdmin = false;
+
+
+
     @inject IDialogService Dialog
     private bool _error;
     private bool _completed;
@@ -242,6 +252,8 @@
 
 
 
+
+
     private async Task OpenCreateForm(int? id)
     {
         IDialogReference dialog;
@@ -250,7 +262,7 @@
         {
             parameters.Add("Id", id.Value);
             parameters.Add("Title", "Update Author");
-          
+
             parameters.Add("ButtonText", "Update Author");
             dialog = await Dialog.ShowAsync<CreateAuthorDialog>("Update Author", parameters, _maxWidth);
         }
@@ -266,11 +278,6 @@
     }
 
 
-    private async Task SelectedPage(int page)
-    {
-        currentPage = page;
-
-    }
 
 
 
@@ -279,7 +286,7 @@
 
 
 
-    private List<AuthorReadOnlyDto> Authors;
+    private List<AuthorReadOnlyDto>? Authors;
 
     private Response<List<AuthorReadOnlyDto>> response = new Response<List<AuthorReadOnlyDto>> { Success = true };
 
@@ -289,16 +296,23 @@
     {
         loading = true;
 
-       var response = await authorsService.GetAll($"{EndPoints.AuthorsEndPoint}");
+        var response = await authorsService.GetAll($"{EndPoints.AuthorsEndPoint}");
 
         Authors = response;
-       loading = false;
-       
+        loading = false;
+
 
     }
     protected override async Task OnInitializedAsync()
     {
         await loadAuthors();
+
+
+
+        isUserAdmin = await ((ApiAuthenticationStateProvider)authenticationStateProvider).IsUserInRole("admin");
+
+        StateHasChanged(); // Update the UI after retrieving the role
+
     }
 
     private readonly DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
@@ -321,10 +335,6 @@
 
 
 
-    async Task goToAddAuthor()
-    {
-        navManager.NavigateTo("/authors/create");
-    }
 
 
 }

@@ -97,6 +97,15 @@ namespace BookStoreApp.Blazor.Server.Providers
             _timer = new Timer(async _ => await CheckTokenAsync(), null, TimeSpan.Zero, TimeSpan.FromSeconds(30));
         }
 
+
+
+        public async Task<bool> IsUserInRole(string role)
+        {
+            var authState = await GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            return user.IsInRole(role);
+        }
         private async Task CheckTokenAsync()
         {
             var token = await localStorage.GetItemAsync<string>("accessToken");

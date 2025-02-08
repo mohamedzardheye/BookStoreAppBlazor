@@ -1,5 +1,5 @@
 ﻿@page "/authors/create"
-@inject IAuthorService authorService
+
 @inject NavigationManager navManager
 
 <h3>Create New Author</h3>
@@ -64,12 +64,12 @@
 
     private async Task HandleCreateAuthor()
     {
-        var response = await authorService.CreateAuthor(Author);
-        if (response.Success)
-        {
+        // var response = await authorService.CreateAuthor(Author);
+        // if (response.Success)
+        // {
 
-            //    navManager.NavigateTo("/authors/index");
-        }
+        //     //    navManager.NavigateTo("/authors/index");
+        // }
 
 
         // await authorService.createAuthor(Author);

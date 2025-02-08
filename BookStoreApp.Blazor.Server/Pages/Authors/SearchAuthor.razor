@@ -1,6 +1,6 @@
 ﻿@page "/authors/search"
 @using Newtonsoft.Json
-@inject IAuthorService authorService
+
 @inject NavigationManager navManager
 @inject HttpClient http
 @inject IJSRuntime js
@@ -263,7 +263,7 @@
 
         if (!result.Canceled)
         {
-            await authorService.DeleteAuthor(id);
+          //  await authorService.DeleteAuthor(id);
             snackBar.Add("Successfully Deleted Record", Severity.Error);
             await table.ReloadServerData();
         }
