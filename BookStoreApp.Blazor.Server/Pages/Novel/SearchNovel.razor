@@ -40,57 +40,57 @@
         <!-- Search block -->
         <div class="card mt-3 border-0">
             <div class="card-body">
-            
 
 
-                    <div class="row g-2">
 
-                        <div class="col-md-2">
+                <div class="row g-2">
+
+                    <div class="col-md-2">
                         <MudSelect @bind-Value="SelectedSearchColumn" Label="Select Search Term" Variant="Variant.Outlined" Clearable>
                             <MudSelectItem Value="@("Title")">Title</MudSelectItem>
                             <MudSelectItem Value="@("Summary")">Summary</MudSelectItem>
                         </MudSelect>
-                        </div>
-                        <div class="col-md-2">
-                            <MudTextField Label="Search Value"
-                            Variant="Variant.Outlined"
-                            @bind-Value="searchTerm"
-                            />
-                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <MudTextField Label="Search Value"
+                        Variant="Variant.Outlined"
+                        @bind-Value="searchTerm"
+                        />
+                    </div>
 
-                        <div class="col-md-2">
-                            <!-- Empty Column -->
-                        </div>
+                    <div class="col-md-2">
+                        <!-- Empty Column -->
+                    </div>
 
-                        <div class="col-md-2">
-                            <div class="search-box">
-                                <!-- <MudDatePicker Label="Date From" Variant="Variant.Outlined" /> -->
-                            </div>
-                        </div>
-
-                        <div class="col-md-2">
-                            <!-- <MudDatePicker Label="Date To" Variant="Variant.Outlined" /> -->
-                        </div>
-
-                        <div class="col-md-2">
-                            <MudButton Color="Color.Inherit"
-                            Size="Size.Large"
-                            ButtonType="ButtonType.Submit"
-                             @onclick="(() => handleSubmit())"
-                            StartIcon="@Icons.Material.Filled.Search"
-                            Style="background-color:green;color:white;">
-                                Filter
-                            </MudButton>
-
-                            <MudButton Color="Color.Inherit"
-                            Size="Size.Large"
-                            StartIcon="@Icons.Material.Filled.LockReset"
-                            Style="background-color:red;color:white;">
-                                Export
-                            </MudButton>
+                    <div class="col-md-2">
+                        <div class="search-box">
+                            <!-- <MudDatePicker Label="Date From" Variant="Variant.Outlined" /> -->
                         </div>
                     </div>
-               
+
+                    <div class="col-md-2">
+                        <!-- <MudDatePicker Label="Date To" Variant="Variant.Outlined" /> -->
+                    </div>
+
+                    <div class="col-md-2">
+                        <MudButton Color="Color.Inherit"
+                        Size="Size.Large"
+                        ButtonType="ButtonType.Submit"
+                        @onclick="(() => handleSubmit())"
+                        StartIcon="@Icons.Material.Filled.Search"
+                        Style="background-color:green;color:white;">
+                            Filter
+                        </MudButton>
+
+                        <MudButton Color="Color.Inherit"
+                        Size="Size.Large"
+                        StartIcon="@Icons.Material.Filled.LockReset"
+                        Style="background-color:red;color:white;">
+                            Export
+                        </MudButton>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -177,6 +177,7 @@
     private string? searchTerm;
 
 
+
     private bool dense = false;
     private bool hover = true;
     private bool striped = false;
@@ -192,7 +193,7 @@
 
 
     private MudTable<NovelReadOnlyDto> table;
-    private AuthorFilterDto authorFilterDto = new AuthorFilterDto();
+  
     private List<NovelReadOnlyDto> Novels;
     //private Response<List<NovelReadOnlyDto>> response = new Response<List<NovelReadOnlyDto>> { Success = true };
 
@@ -214,7 +215,7 @@
         Console.WriteLine("Loading Novels");
 
         loading = true;
-        authorFilterDto.Page = 1;
+     
         QuantityPerPage = "10";
 
         _interceptor.MonitorEvent();

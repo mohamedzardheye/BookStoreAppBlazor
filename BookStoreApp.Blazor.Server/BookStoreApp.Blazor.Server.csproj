@@ -27,8 +27,4 @@
     <Folder Include="Data\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\BookStoreApp.Shared\BookStoreApp.Shared.csproj" />
-  </ItemGroup>
-
 </Project>

@@ -38,7 +38,7 @@ builder.Services.AddAutoMapper(typeof(MapperConfig));
 builder.Services.AddScoped<Client, Client>(); // Register IClient
 builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
-builder.Services.AddScoped<IAuthorService, AuthorService>();
+
 builder.Services.AddScoped<ApiAuthenticationStateProvider>();
 builder.Services.AddScoped<AuthenticationStateProvider>(p =>
                                                         p.GetRequiredService<ApiAuthenticationStateProvider>());

@@ -207,24 +207,13 @@
 
 
 
-
-
 				<div class="col-sm-1"></div>
-
-
 
 
 
 				<div class="col-lg-4 col-sm-12 col-md-6 col-xl-3">
 					<MudChart ChartType="ChartType.Bar" ChartSeries="@Series" @bind-SelectedIndex="Index" XAxisLabels="@XAxisLabels" Width="100%" Height="350px"></MudChart>
 				</div>
-
-
-
-
-
-
-
 
 
 
@@ -252,8 +241,8 @@
 
 
 
-						@inject AuthenticationStateProvider AuthenticationStateProvider
-						@inject NavigationManager navManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager navManager
 @code {
 	private int Index = -1; //default value cannot be 0 -> first selectedindex is 0.
 

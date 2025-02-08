@@ -1,6 +1,6 @@
 ﻿@page "/authors/search"
 @using Newtonsoft.Json
-@inject IAuthorService authorService
+
 @inject NavigationManager navManager
 @inject HttpClient http
 @inject IJSRuntime js
@@ -42,23 +42,21 @@
         <!-- Search block -->
         <div class="card mt-3 border-0">
             <div class="card-body">
-                <EditForm Model="authorFilterDto" OnValidSubmit="handleSubmit">
-                    <DataAnnotationsValidator />
-                    <ValidationSummary />
+          
 
                     <div class="row g-2">
                         <div class="col-md-2">
                             <MudTextField Label="First Name"
                             Variant="Variant.Outlined"
-                            @bind-Value="authorFilterDto.FirstName"
-                            For="@(() => authorFilterDto.FirstName)" />
+                            @bind-Value="firstName"
+                            />
                         </div>
 
                         <div class="col-md-2">
                             <MudTextField Label="Last Name"
                             Variant="Variant.Outlined"
-                            @bind-Value="authorFilterDto.LastName"
-                            For="@(() => authorFilterDto.LastName)" />
+                            @bind-Value="lastName"
+                            />
                         </div>
 
                         <div class="col-md-2">
@@ -78,6 +76,7 @@
                         <div class="col-md-2">
                             <MudButton Color="Color.Inherit"
                             Size="Size.Large"
+                                       @onclick="(() => handleSubmit())"
                             ButtonType="ButtonType.Submit"
                             StartIcon="@Icons.Material.Filled.Search"
                             Style="background-color:green;color:white;">
@@ -92,7 +91,7 @@
                             </MudButton>
                         </div>
                     </div>
-                </EditForm>
+              
             </div>
         </div>
 
@@ -164,6 +163,8 @@
     private readonly DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
     @inject ISnackbar snackBar
 
+    private string? firstName;
+    private string? lastName;
 
 
     private bool dense = false;
@@ -181,7 +182,7 @@
 
 
     private MudTable<AuthorReadOnlyDto> table;
-    private AuthorFilterDto authorFilterDto = new AuthorFilterDto();
+  
     private List<AuthorReadOnlyDto> Authors;
     private Response<List<AuthorReadOnlyDto>> response = new Response<List<AuthorReadOnlyDto>> { Success = true };
 
@@ -203,15 +204,15 @@
         Console.WriteLine("Loading Authors");
 
         loading = true;
-        authorFilterDto.Page = 1;
+     
         QuantityPerPage = "10";
 
         _interceptor.MonitorEvent();
 
 
-        Console.WriteLine($"{EndPoints.AuthorsEndPoint}Search?FirstName={authorFilterDto.FirstName}&LastName={authorFilterDto.LastName}&Page={state.Page + 1}&QuantityPerPage={state.PageSize}");
+        Console.WriteLine($"{EndPoints.AuthorsEndPoint}Search?FirstName={firstName}&LastName={lastName}&Page={state.Page + 1}&QuantityPerPage={state.PageSize}");
         var response =
-            await authorsService.GetPagined($"{EndPoints.AuthorsEndPoint}Search?FirstName={authorFilterDto.FirstName}&LastName={authorFilterDto.LastName}&Page={state.Page + 1}&QuantityPerPage={QuantityPerPage}");
+            await authorsService.GetPagined($"{EndPoints.AuthorsEndPoint}Search?FirstName={firstName}&LastName={lastName}&Page={state.Page + 1}&QuantityPerPage={QuantityPerPage}");
 
         Authors = response.Data;
         totalPageQuantity = response.totalRecords;
@@ -263,7 +264,7 @@
 
         if (!result.Canceled)
         {
-            await authorService.DeleteAuthor(id);
+          //  await authorService.DeleteAuthor(id);
             snackBar.Add("Successfully Deleted Record", Severity.Error);
             await table.ReloadServerData();
         }
