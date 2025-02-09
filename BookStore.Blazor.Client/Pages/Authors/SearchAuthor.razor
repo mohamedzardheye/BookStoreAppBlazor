@@ -211,6 +211,8 @@
 
 
         Console.WriteLine($"{EndPoints.AuthorsEndPoint}Search?FirstName={firstName}&LastName={lastName}&Page={state.Page + 1}&QuantityPerPage={state.PageSize}");
+        
+        
         var response =
             await authorsService.GetPagined($"{EndPoints.AuthorsEndPoint}Search?FirstName={firstName}&LastName={lastName}&Page={state.Page + 1}&QuantityPerPage={QuantityPerPage}");
 
@@ -264,16 +266,12 @@
 
         if (!result.Canceled)
         {
-          //  await authorService.DeleteAuthor(id);
+            await authorsService.Delete($"{EndPoints.AuthorsEndPoint}" ,id);
             snackBar.Add("Successfully Deleted Record", Severity.Error);
             await table.ReloadServerData();
         }
     }
 
-    async Task goToAddAuthor()
-    {
-        navManager.NavigateTo("/authors/create");
-    }
 
 
     public void Dispose()

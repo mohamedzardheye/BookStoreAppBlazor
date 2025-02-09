@@ -137,7 +137,7 @@
 
                     <MudTd DataLabel="Actions">
                         <MudIconButton Icon="@Icons.Material.Filled.Delete"
-
+                        @onclick="(() => Delete(context.Id))"
                         Variant="Variant.Outlined"
                         Color="Color.Error"
                         Size="Size.Small" />
@@ -193,7 +193,7 @@
 
 
     private MudTable<NovelReadOnlyDto> table;
-  
+
     private List<NovelReadOnlyDto> Novels;
     //private Response<List<NovelReadOnlyDto>> response = new Response<List<NovelReadOnlyDto>> { Success = true };
 
@@ -215,14 +215,14 @@
         Console.WriteLine("Loading Novels");
 
         loading = true;
-     
+
         QuantityPerPage = "10";
 
         _interceptor.MonitorEvent();
 
 
         Console.WriteLine($"{EndPoints.NovelsEndPoint}Search?searchColumn={SelectedSearchColumn}&searchTerm={searchTerm}&Page={state.Page + 1}&QuantityPerPage={QuantityPerPage}");
-        
+
         var response =
             await novelsService.GetPagined($"{EndPoints.NovelsEndPoint}Search?searchColumn={SelectedSearchColumn}&searchTerm={searchTerm}&Page={state.Page + 1}&QuantityPerPage={QuantityPerPage}");
 
@@ -237,7 +237,7 @@
         loading = false;
 
 
-        return new TableData<NovelReadOnlyDto>() { Items = response.Data, TotalItems = response.totalRecords };
+        return new TableData<NovelReadOnlyDto>() { Items = Novels, TotalItems = response.totalRecords };
     }
 
     private async Task OpenCreateForm(string? id)
@@ -259,11 +259,11 @@
         }
 
         var result = await dialog.Result;
-        await table.ReloadServerData();
+      await table.ReloadServerData();
 
     }
 
-    private async Task Delete(int id)
+    private async Task Delete(string id)
     {
         var parameters = new DialogParameters
         {
@@ -278,16 +278,13 @@
 
         if (!result.Canceled)
         {
-            //await novelsService.Delete(id);
+            await novelsService.Delete($"{EndPoints.NovelsEndPoint}",id);
             snackBar.Add("Successfully Deleted Record", Severity.Error);
             await table.ReloadServerData();
         }
     }
 
-    async Task goToAddAuthor()
-    {
-        navManager.NavigateTo("/authors/create");
-    }
+ 
 
 
     public void Dispose()
