@@ -1,0 +1,297 @@
+﻿@page "/novels/search"
+@inject NavigationManager navManager
+@inject HttpClient http
+@inject IJSRuntime js
+
+@inject HttpInerceptorService _interceptor
+
+@implements IDisposable
+@* @if (response.Success == false)
+{
+    <div class="alert alert-danger">
+        <p><em>@response.Message</em></p>
+    </div>
+} *@
+
+<div class="side-app">
+    <!-- CONTAINER -->
+    <div class="main-container container-fluid">
+        <!-- PAGE-HEADER -->
+        <div class="page-header">
+            <div class="ms-auto pageheader-btn">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Novels</li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="col-offset-10 col-md-2 mb-3">
+            <MudButton Variant="Variant.Filled"
+            EndIcon="@Icons.Material.Filled.Add"
+            Class="align-content-lg-end"
+            @onclick="(() => OpenCreateForm(null))"
+            Size="Size.Large"
+            Color="Color.Primary">
+                Add New Novel
+            </MudButton>
+        </div>
+
+        <!-- Search block -->
+        <div class="card mt-3 border-0">
+            <div class="card-body">
+
+
+
+                <div class="row g-2">
+
+                    <div class="col-md-2">
+                        <MudSelect @bind-Value="SelectedSearchColumn" Label="Select Search Term" Variant="Variant.Outlined" Clearable>
+                            <MudSelectItem Value="@("Title")">Title</MudSelectItem>
+                            <MudSelectItem Value="@("Summary")">Summary</MudSelectItem>
+                        </MudSelect>
+                    </div>
+                    <div class="col-md-2">
+                        <MudTextField Label="Search Value"
+                        Variant="Variant.Outlined"
+                        @bind-Value="searchTerm"
+                        />
+                    </div>
+
+                    <div class="col-md-2">
+                        <!-- Empty Column -->
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="search-box">
+                            <!-- <MudDatePicker Label="Date From" Variant="Variant.Outlined" /> -->
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <!-- <MudDatePicker Label="Date To" Variant="Variant.Outlined" /> -->
+                    </div>
+
+                    <div class="col-md-2">
+                        <MudButton Color="Color.Inherit"
+                        Size="Size.Large"
+                        ButtonType="ButtonType.Submit"
+                        @onclick="(() => handleSubmit())"
+                        StartIcon="@Icons.Material.Filled.Search"
+                        Style="background-color:green;color:white;">
+                            Filter
+                        </MudButton>
+
+                        <MudButton Color="Color.Inherit"
+                        Size="Size.Large"
+                        StartIcon="@Icons.Material.Filled.LockReset"
+                        Style="background-color:red;color:white;">
+                            Export
+                        </MudButton>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        @if (loading)
+        {
+            <Loading />
+        }
+        else
+        {
+            <MudTable Items="@Novels"
+            Dense="true"
+            Hover="@hover"
+            SortLabel="Sort By"
+            @ref="table"
+            ServerData="loadNovels"
+            Bordered="@bordered"
+            Striped="@striped">
+
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Novels</MudText>
+                    <MudSpacer />
+                </ToolBarContent>
+
+                <HeaderContent>
+                    <MudTh>Title</MudTh>
+                    <MudTh>Year </MudTh>
+
+                    <MudTh>Summary </MudTh>
+                    <MudTh>price </MudTh>
+                    <MudTh>Action</MudTh>
+
+                </HeaderContent>
+
+                <RowTemplate>
+
+                    <MudTd DataLabel="Title">@context.Title</MudTd>
+                    <MudTd DataLabel="Year">@context.Year</MudTd>
+
+
+
+                    <MudTd DataLabel="summary">@context.Summary</MudTd>
+
+                    <MudTd DataLabel="summary">@context.Price</MudTd>
+
+                    <MudTd DataLabel="Actions">
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete"
+
+                        Variant="Variant.Outlined"
+                        Color="Color.Error"
+                        Size="Size.Small" />
+
+                        <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                        @onclick="(() => OpenCreateForm(id: context.Id))"
+                        Variant="Variant.Outlined"
+                        Color="Color.Primary"
+                        Size="Size.Small" />
+                    </MudTd>
+                </RowTemplate>
+
+                <PagerContent>
+                    <MudTablePager RowsPerPageString="@QuantityPerPage"
+                    InfoFormat="@infoFormat"
+                    TotalItems="@totalPageQuantity"
+                    PageSizeOptions="new int[] { 10, 60, 100, 200 }" />
+
+
+                </PagerContent>
+            </MudTable>
+        }
+
+    </div>
+</div>
+
+@inject NavigationManager navManager
+@inject IDialogService dialogService
+@inject IHttpContacts<PagedResult<NovelReadOnlyDto>> novelsService
+@inject HttpInerceptorService _interceptor
+
+@code {
+    private readonly DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+    @inject ISnackbar snackBar
+
+    private string SelectedSearchColumn { get; set; } = "Title"; // Default selection
+    private string? searchTerm;
+
+
+
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = false;
+    private bool loading = true;
+
+    private int totalPageQuantity = 300;
+    private string? QuantityPerPage;
+    private int currentPage = 1;
+    private string infoFormat = "Showing item {0} to {1} of {2}";
+    private string nameFilter = string.Empty;
+
+
+
+    private MudTable<NovelReadOnlyDto> table;
+  
+    private List<NovelReadOnlyDto> Novels;
+    //private Response<List<NovelReadOnlyDto>> response = new Response<List<NovelReadOnlyDto>> { Success = true };
+
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await loadNovels(new TableState(), CancellationToken.None);
+    }
+
+    async Task handleSubmit()
+    {
+        await loadNovels(new TableState(), CancellationToken.None);
+    }
+
+    public async Task<TableData<NovelReadOnlyDto>> loadNovels(TableState state, CancellationToken cancellationToken)
+    {
+        Console.WriteLine("Loading Novels");
+
+        loading = true;
+     
+        QuantityPerPage = "10";
+
+        _interceptor.MonitorEvent();
+
+
+        Console.WriteLine($"{EndPoints.NovelsEndPoint}Search?searchColumn={SelectedSearchColumn}&searchTerm={searchTerm}&Page={state.Page + 1}&QuantityPerPage={QuantityPerPage}");
+        
+        var response =
+            await novelsService.GetPagined($"{EndPoints.NovelsEndPoint}Search?searchColumn={SelectedSearchColumn}&searchTerm={searchTerm}&Page={state.Page + 1}&QuantityPerPage={QuantityPerPage}");
+
+        Novels = response.Data;
+
+        Console.WriteLine(Novels);
+
+        totalPageQuantity = response.totalRecords;
+        QuantityPerPage = response.quantityPerPage.ToString();
+        infoFormat = $"Showing {QuantityPerPage} to {response.totalRecords} of {totalPageQuantity}";
+
+        loading = false;
+
+
+        return new TableData<NovelReadOnlyDto>() { Items = response.Data, TotalItems = response.totalRecords };
+    }
+
+    private async Task OpenCreateForm(string? id)
+    {
+        IDialogReference dialog;
+        var parameters = new DialogParameters();
+        if (id != null)
+        {
+            parameters.Add("Id", id);
+            parameters.Add("Title", "Update Novel");
+            parameters.Add("ButtonText", "Update Novel");
+            dialog = await dialogService.ShowAsync<CreateNovalDialog>("Update Novel", parameters, _maxWidth);
+        }
+        else
+        {
+            parameters.Add("Title", "Add New Novel");
+            parameters.Add("ButtonText", "Register Novel");
+            dialog = await dialogService.ShowAsync<CreateNovalDialog>("Add New Novel", parameters, _maxWidth);
+        }
+
+        var result = await dialog.Result;
+        await table.ReloadServerData();
+
+    }
+
+    private async Task Delete(int id)
+    {
+        var parameters = new DialogParameters
+        {
+            { "ContentText", "Do you really want to delete this record?" },
+            { "ButtonText", "Delete" },
+            { "Color", Color.Error }
+        };
+
+        var options = new DialogOptions() { CloseButton = true, MaxWidth = MaxWidth.ExtraSmall };
+        var dialog = await dialogService.ShowAsync<ConfirmDialog>("Delete", parameters, options);
+        var result = await dialog.Result;
+
+        if (!result.Canceled)
+        {
+            //await novelsService.Delete(id);
+            snackBar.Add("Successfully Deleted Record", Severity.Error);
+            await table.ReloadServerData();
+        }
+    }
+
+    async Task goToAddAuthor()
+    {
+        navManager.NavigateTo("/authors/create");
+    }
+
+
+    public void Dispose()
+    {
+        _interceptor.DisposeEvent();
+    }
+}

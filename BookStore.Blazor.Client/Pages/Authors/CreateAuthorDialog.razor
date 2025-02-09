@@ -1,0 +1,163 @@
+﻿<EditForm Model="@Author" OnValidSubmit="HandleCreateAuthor">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <MudDialog>
+
+
+
+        <TitleContent>
+            <MudPaper Class="mud-theme-primary"  style="padding:1%" Elevation="0">
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.Add" Class="mr-3" />@Title
+                </MudText>
+            </MudPaper>
+        </TitleContent>  
+
+
+
+        <DialogContent>
+
+
+            <div class="form-group">
+
+                <div class="form-group">
+                    <label for="LastName">First Name</label>
+                    <MudTextField @bind-Value="Author.FirstName" Label="First Name" Variant="Variant.Outlined"></MudTextField>
+                    <ValidationMessage For="@(() => Author.FirstName)" />
+                </div>
+
+
+                <div class="form-group">
+                    <label for="LastName">Last Name</label>
+                    <MudTextField @bind-Value="Author.LastName" Label="Last Name" Variant="Variant.Outlined"></MudTextField>
+                    <ValidationMessage For="@(() => Author.LastName)" />
+                </div>
+
+
+                <div class="form-group">
+                    <label for="LastName">Bio</label>
+                    <MudTextField @bind-Value="Author.Bio" Label="Bio" Variant="Variant.Outlined"></MudTextField>
+                    <ValidationMessage For="@(() => Author.Bio)" />
+                </div>
+
+
+            </div> <!-- end form group-->
+
+
+
+
+        </DialogContent>
+
+        <DialogActions>
+
+            <MudButton OnClick="Cancel" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Close</MudButton>   
+            <MudButton ButtonType="ButtonType.Submit"  Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">
+                @ButtonText
+
+
+            </MudButton>
+
+        </DialogActions>
+
+    </MudDialog>
+</EditForm>
+
+
+@inject NavigationManager navManager
+
+@inject ISnackbar Snackbar
+
+@inject IHttpContacts<AuthorCreateDto> authorService
+
+@code {
+
+
+    [Parameter]
+    public EventCallback Authors { get; set; }
+
+    [Parameter]
+    public int? Id { get; set; }
+
+
+    [Parameter]
+    public string? Title { get; set; }
+
+
+    [Parameter]
+    public string? ButtonText { get; set; }
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    private void Submit() => MudDialog.Close(DialogResult.Ok(true));
+
+    private void Cancel() => MudDialog.Cancel();
+
+
+
+    AuthorCreateDto Author = new AuthorCreateDto();
+    // private AuthorUpdateDto AuthorUpdate = new AuthorUpdateDto();
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (Id.HasValue)
+        {
+
+            Console.WriteLine("Id is not null"+ Id);
+
+
+            var response = await authorService.Get($"{EndPoints.AuthorsEndPoint}", Id.Value);
+            Console.WriteLine("Response is " + response.FirstName);
+            Author = response;
+         }
+       }
+
+
+    private async Task HandleCreateAuthor()
+    {
+
+        if (Id.HasValue)
+        {
+         
+
+           await authorService.Update($"{EndPoints.AuthorsEndPoint}", Author, Id.Value);
+            SnackMessage("Succesfully Updated "+ Id.Value , Severity.Success);
+            Cancel();
+
+            await Authors.InvokeAsync();
+            Console.WriteLine("Author Updated");
+        }
+        else {
+            await authorService.Post($"{EndPoints.AuthorsEndPoint}", Author);
+           
+                SnackMessage("Succesfully Saved Record", Severity.Success);
+                Cancel();
+
+                await Authors.InvokeAsync();
+                Console.WriteLine("Author Created");
+
+              
+
+           
+        }
+       
+
+
+      
+    }
+
+
+
+    private void SnackMessage(string text, Severity type)
+    {
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopRight;
+        Snackbar.Add(text, type);
+    }
+
+  
+
+    // end all 
+}

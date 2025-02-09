@@ -1,0 +1,111 @@
+﻿@inherits LayoutComponentBase
+@* Required *@
+<MudThemeProvider />
+<MudPopoverProvider />
+
+@* Needed for dialogs *@
+<MudDialogProvider />
+
+@* Needed for snackbars *@
+<MudSnackbarProvider />
+<PageTitle>BookStore Online Platform</PageTitle>
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudText Typo="Typo.h5" Class="ml-3">
+
+
+            <span>
+            <img src="images/sahal_logo_white.png" width="200" height="200" style="color:white; margin-left:-15%;" alt="profile-user"/>
+            </span>
+        </MudText>
+        <MudSpacer />
+
+
+
+
+
+      
+
+
+
+
+
+
+
+
+         <MudSpacer />
+
+        <MudSpacer />
+
+
+
+        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <NavMenu/>
+    </MudDrawer>
+    <MudMainContent>
+        @Body
+    </MudMainContent>
+</MudLayout>
+
+@inject IAuthenticationService authService
+@inject IJSRuntime jsRuntime
+@inject NavigationManager navManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@code {
+  
+
+
+
+    private string userName;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+
+
+        var claims = user.Claims;
+        foreach (var claim in claims)
+        {
+            Console.WriteLine($"{claim.Type}: {claim.Value}");
+
+
+        }
+
+        if (user.Identity.IsAuthenticated)
+        {
+            // Retrieve the 'sub' claim (which is typically used for the user identifier or email)
+            var subClaim = user.FindFirst("sub");
+            if (subClaim != null)
+            {
+                userName = subClaim.Value;  // Use the 'sub' claim (email or user identifier)
+            }
+            else
+            {
+                userName = "Name not available in claims";
+               
+            }
+        }
+        else
+        {
+            userName = "Guest";
+        
+          
+        }
+    }
+
+
+
+    bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}

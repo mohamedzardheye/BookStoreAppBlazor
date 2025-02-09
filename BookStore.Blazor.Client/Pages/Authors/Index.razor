@@ -1,0 +1,341 @@
+﻿@page "/authors/index"
+@using BookStore.Blazor.Client.Providers
+
+
+
+@inject NavigationManager navManager
+
+@inject IDialogService DialogService
+
+@inject IHttpContacts<AuthorReadOnlyDto> authorsService
+
+@attribute [Authorize(Roles = Roles.user)]
+
+@if (response.Success == false)
+{
+    <div class="alert alert-danger">
+        <p><em>@response.Message</em></p>
+    </div>
+
+}
+
+
+<div class="side-app">
+    <!-- CONTAINER -->
+    <div class="main-container container-fluid">
+        <!-- PAGE-HEADER -->
+
+
+
+        <div class="page-header">
+
+            <div class="ms-auto pageheader-btn">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Authors</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- button to new author-->
+
+        <AuthorizeView Roles = "admin">
+
+            <div class="col-offset-10 col-md-2 mb-3">
+                <div class="btn-list">
+                    <MudButton Variant="Variant.Filled"
+                    EndIcon="@Icons.Material.Filled.Add"
+                    Class="align-content-lg-end"
+                    @onclick="(()=>OpenCreateForm(null))"
+                    Size="Size.Large"
+                    Color="Color.Primary">
+                        Add New Author
+                    </MudButton>
+
+
+
+                </div>
+            </div>
+
+        </AuthorizeView>
+
+
+
+
+
+
+        <!--start searcj b;pcl-->
+
+        <div class="card mt-3 border-0">
+            <div class="card-body">
+
+
+
+                <div class="row g-2">
+                    <div class="col-md-2">
+                        <MudTextField @bind-Value="TextValue" Label="First Name" Variant="Variant.Outlined"></MudTextField>
+
+                    </div>
+
+                    <div class="col-md-2">
+                        <MudTextField @bind-Value="TextValue" Label="Last Name" Variant="Variant.Outlined"></MudTextField>
+
+                    </div>
+
+
+                    <div class="col-md-2">
+                        <MudTextField @bind-Value="TextValue" Label="Outlined" Variant="Variant.Outlined"></MudTextField>
+
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="search-box">
+                            <MudDatePicker Label="Date From" Variant="Variant.Outlined" />
+
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+
+                        <MudDatePicker Label="Date To" Variant="Variant.Outlined" />
+
+                    </div>
+
+
+                    <div class="col-md-2">
+                        <p />
+
+                        <MudButton Color="Color.Inherit" Size="Size.Large" ButtonType="ButtonType.Submit" StartIcon="@Icons.Material.Filled.Search" Style="background-color:green;color:white;">
+                            Filter
+                        </MudButton>
+
+                        <MudButton Color="Color.Inherit" Size="Size.Large" ButtonType="ButtonType.Reset" StartIcon="@Icons.Material.Filled.LockReset" Style="background-color:red;color:white;">
+                            Reset
+                        </MudButton>
+
+                    </div>
+
+
+
+                    <!--end col-->
+                    <div class="col-md-2 mt-2">
+                        <div>
+                        </div>
+                    </div>
+                    <!--end col-->
+                </div>
+                <!--end row-->
+
+            </div>
+        </div>
+
+
+        <!-- end container flue-->
+
+
+
+        @if (Authors == null)
+        {
+            <Loading />
+
+
+        }
+
+        else
+        {
+
+
+
+            <!-- PAGE-HEADER END -->
+            <MudTable Items="@Authors"
+            Dense="true"
+            Hover="@hover"
+            SortLabel="Sort By"
+            Bordered="@bordered" Striped="@striped"
+            >
+
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">All Authors</MudText>
+                    <MudSpacer />
+
+
+
+
+
+                </ToolBarContent>
+                <HeaderContent>
+                    <MudTh>First Name</MudTh>
+                    <MudTh>Last Name </MudTh>
+                    <MudTh>Action</MudTh>
+
+                </HeaderContent>
+
+                <RowTemplate>
+
+                    <MudTd DataLabel="firstName">@context.FirstName</MudTd>
+                    <MudTd DataLabel="lastName">@context.LastName</MudTd>
+
+
+
+
+                    @if (isUserAdmin)
+                    {
+
+
+                        <MudTd DataLabel="Actions">
+
+                            <MudIconButton Icon="@Icons.Material.Filled.Delete"
+                            Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" />
+
+
+
+
+                            <MudIconButton Icon="@Icons.Material.Filled.Edit"
+                            @onclick="(()=>OpenCreateForm(id:context.Id))"
+                            Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
+
+                        </MudTd>
+
+
+                    }
+
+
+
+
+                </RowTemplate>
+                <PagerContent>
+                    <MudTablePager PageSizeOptions="new int[] { 30, 40, 50, 100 }" />
+                </PagerContent>
+            </MudTable>
+
+
+
+
+
+
+
+
+        }
+
+    </div>
+
+
+</div>
+
+
+    @inject AuthenticationStateProvider authenticationStateProvider
+    @inject NavigationManager navManager
+
+
+@code {
+    private bool isUserAdmin = false;
+
+
+
+    @inject IDialogService Dialog
+    private bool _error;
+    private bool _completed;
+    private bool _disabled;
+
+    private int _index;
+
+
+    private bool dense = false;
+    private bool hover = true;
+    private bool striped = false;
+    private bool bordered = false;
+    private bool loading = true;
+
+
+
+    private int totalPageQuantity;
+    private int currentPage = 1;
+    private string nameFilter = string.Empty;
+
+
+
+
+
+    private async Task OpenCreateForm(int? id)
+    {
+        IDialogReference dialog;
+        var parameters = new DialogParameters();
+        if (id != null)
+        {
+            parameters.Add("Id", id.Value);
+            parameters.Add("Title", "Update Author");
+
+            parameters.Add("ButtonText", "Update Author");
+            dialog = await Dialog.ShowAsync<CreateAuthorDialog>("Update Author", parameters, _maxWidth);
+        }
+        else
+        {
+            parameters.Add("Title", "Add New Author");
+            parameters.Add("ButtonText", "Register Author");
+
+            dialog = await Dialog.ShowAsync<CreateAuthorDialog>("Add NewA", parameters, _maxWidth);
+        }
+        var result = await dialog.Result;
+        await OnInitializedAsync();
+    }
+
+
+
+
+
+    public string? TextValue { get; set; }
+
+
+
+
+    private List<AuthorReadOnlyDto>? Authors;
+
+    private Response<List<AuthorReadOnlyDto>> response = new Response<List<AuthorReadOnlyDto>> { Success = true };
+
+
+
+    public async Task loadAuthors()
+    {
+        loading = true;
+
+        var response = await authorsService.GetAll($"{EndPoints.AuthorsEndPoint}");
+
+        Authors = response;
+        loading = false;
+
+
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await loadAuthors();
+
+
+
+        isUserAdmin = await ((ApiAuthenticationStateProvider)authenticationStateProvider).IsUserInRole("admin");
+
+        StateHasChanged(); // Update the UI after retrieving the role
+
+    }
+
+    private readonly DialogOptions _maxWidth = new() { MaxWidth = MaxWidth.Medium, FullWidth = true };
+
+    private Task OpenDialogAsync(DialogOptions options)
+    {
+        // var options = new DialogOptions { CloseOnEscapeKey = true };
+
+        return DialogService.ShowAsync<CreateAuthorDialog>("Simple Dialog", options);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}

@@ -1,0 +1,71 @@
+﻿@using BookStore.Blazor.Client.Providers
+@inject NavigationManager navManager
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+
+                <NotAuthorized>
+                    @if (context.User?.Identity?.IsAuthenticated == false)
+                    {
+                        <RedirectToLogin />
+
+
+                    }
+                    else
+                    {
+                        <div class="page" style="color:black; margin-top:8%;">
+                            <!-- PAGE-CONTENT OPEN -->
+                            <div class="page-content error-page error2">
+                                <div class="container text-center">
+                                    <div class="error-templates">
+                                        <h1 class="text-black mb-2">401<span class="fs-20"> UnAuthorized</span></h1>
+                                        <h5 class="error-details text-black">
+                                            You don't have permission to access this page!
+                                        </h5>
+                                        <p>You're not authorized to view this page</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- PAGE-CONTENT OPEN CLOSED -->
+                        </div>
+                    }
+
+
+                </NotAuthorized>
+            </AuthorizeRouteView>
+            <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p>Sorry, there's nothing at this address.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+
+</CascadingAuthenticationState>
+@* 
+<Router AppAssembly="@typeof(App).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+    </Found>
+    <NotFound>
+        <PageTitle>Not found</PageTitle>
+        <LayoutView Layout="@typeof(MainLayout)">
+            <p role="alert">Sorry, there's nothing at this address.</p>
+        </LayoutView>
+    </NotFound>
+</Router>
+ *@
+
+
+@code {
+    [Inject] private ApiAuthenticationStateProvider AuthStateProvider { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        // Start checking token expiration
+        AuthStateProvider.StartChecking();
+    }
+}

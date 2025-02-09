@@ -1,0 +1,94 @@
+﻿@inject ISnackbar Snackbar
+@inject IHttpContacts<NovelCreateDto> NovelService
+@inject NavigationManager navManager
+
+<EditForm Model="@Novel" OnValidSubmit="HandleCreateNovel">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <MudDialog>
+        <TitleContent>
+            <MudPaper Class="mud-theme-primary" style="padding:1%" Elevation="0">
+                <MudText Typo="Typo.h6">
+                    <MudIcon Icon="@Icons.Material.Filled.Book" Class="mr-3" /> @Title
+                </MudText>
+            </MudPaper>
+        </TitleContent>
+
+        <DialogContent>
+            <div class="form-group">
+                <MudTextField @bind-Value="Novel.Title" Label="Title" Variant="Variant.Outlined" Required></MudTextField>
+                <ValidationMessage For="@(() => Novel.Title)" />
+
+                <MudTextField @bind-Value="Novel.Year" Label="Year" Variant="Variant.Outlined" Type="number" Required></MudTextField>
+                <ValidationMessage For="@(() => Novel.Year)" />
+
+                <MudTextField @bind-Value="Novel.Isbn" Label="ISBN" Variant="Variant.Outlined" Required></MudTextField>
+                <ValidationMessage For="@(() => Novel.Isbn)" />
+
+                <MudTextField @bind-Value="Novel.Summary" Label="Summary" Variant="Variant.Outlined" MultiLine Rows="3" Required></MudTextField>
+                <ValidationMessage For="@(() => Novel.Summary)" />
+
+                <MudTextField @bind-Value="Novel.Price" Label="Price" Variant="Variant.Outlined" Type="number" Required></MudTextField>
+                <ValidationMessage For="@(() => Novel.Price)" />
+            </div>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton OnClick="Cancel" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Close" Color="Color.Error">Close</MudButton>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" EndIcon="@Icons.Material.Filled.Send" Color="Color.Primary">@ButtonText</MudButton>
+        </DialogActions>
+    </MudDialog>
+</EditForm>
+
+@code {
+    [Parameter]
+    public EventCallback Novels { get; set; }
+
+    [Parameter]
+    public string? Id { get; set; }
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter]
+    public string? ButtonText { get; set; }
+
+    [CascadingParameter]
+    private IMudDialogInstance MudDialog { get; set; }
+
+    private void Cancel() => MudDialog.Cancel();
+
+    NovelCreateDto Novel = new NovelCreateDto();
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrEmpty(Id))
+        {
+            var response = await NovelService.Get($"{EndPoints.NovelsEndPoint}", Id);
+            Novel = response;
+        }
+    }
+
+    private async Task HandleCreateNovel()
+    {
+        if (!string.IsNullOrEmpty(Id))
+        {
+           await NovelService.UpdateMongoDb($"{EndPoints.NovelsEndPoint}", Novel, Id);
+            ShowSnackbar("Successfully Updated Id" + Id, Severity.Success);
+        }
+        else
+        {
+            await NovelService.Post($"{EndPoints.NovelsEndPoint}", Novel);
+            ShowSnackbar("Successfully Created", Severity.Success);
+        }
+        Cancel();
+        await Novels.InvokeAsync();
+    }
+
+    private void ShowSnackbar(string message, Severity severity)
+    {
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopRight;
+        Snackbar.Add(message, severity);
+    }
+}

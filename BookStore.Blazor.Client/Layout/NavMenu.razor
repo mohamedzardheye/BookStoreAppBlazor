@@ -1,0 +1,208 @@
+﻿
+@* <div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">BookStore.Blazor.Client</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+
+
+
+        <AuthorizeView>
+
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" >
+                        <span class="oi oi-plus" aria-hidden="true"></span>
+                        @context.User?.Identity?.Name?.ToString()
+                        </NavLink>
+
+    
+                </div>
+                     <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="user/logout">
+                        <span class="oi oi-plus" aria-hidden="true"></span> logout
+                    </NavLink>
+                </div>
+
+                <hr />
+                  <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="authors/index">
+                        <span class="oi oi-book" aria-hidden="true"></span> Authors
+                    </NavLink>
+                </div>
+
+            
+           
+               
+
+            </Authorized>
+
+
+            <NotAuthorized>
+
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="user/register">
+                        <span class="oi oi-plus" aria-hidden="true"></span> register
+                    </NavLink>
+                </div>
+
+
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="user/login">
+                        <span class="oi oi-plus" aria-hidden="true"></span> Login
+                    </NavLink>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+       
+
+
+
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+
+  
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}
+ *@
+
+
+<MudNavMenu Class="mt-1">
+
+
+
+     <AuthorizeView>
+
+            <Authorized>
+
+            <MudNavLink Href="/Authors/" Icon="@Icons.Material.Filled.TaskAlt">
+                @userName
+                
+            
+            </MudNavLink>
+
+            <br/>
+
+            <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Dashboard">Dashboard</MudNavLink>
+            <br />
+             <MudNavLink Href="/Authors/index" Icon="@Icons.Material.Filled.TaskAlt">Authors</MudNavLink>
+            <MudNavLink Href="/Authors/search" Icon="@Icons.Material.Filled.Search">Search Authors</MudNavLink>
+            <br />
+
+            <MudNavLink Href="/novels/index" Icon="@Icons.Material.Filled.Book">Manage Novals</MudNavLink>
+            <MudNavLink Href="/novels/search" Icon="@Icons.Material.Filled.Book">Search Novels</MudNavLink>
+            <br />
+
+      
+
+
+
+      
+
+
+
+
+    <MudNavGroup Icon="@Icons.Material.Filled.Logout" Title="Logout">
+        <MudNavLink Href="user/logout">Logout</MudNavLink>
+        </MudNavGroup>
+
+
+          
+        </Authorized>
+      
+
+
+
+            <NotAuthorized>
+
+
+            <MudText Typo="Typo.h5" Class="ml-3">
+
+                
+                <span>
+                    <img src="sahal_logo_white.png" width="200" height="200" style="color:white; margin-left:-15%;" alt="profile-user" />
+                </span>
+            </MudText>
+
+            <MudNavLink Href="user/login" Icon="@Icons.Material.Filled.TaskAlt">Login</MudNavLink>
+            <MudNavLink Href="user/register" Icon="@Icons.Material.Filled.TaskAlt">Register</MudNavLink>
+
+
+                </NotAuthorized>
+
+    </AuthorizeView>
+
+    
+</MudNavMenu>
+
+
+@inject IAuthenticationService authService
+
+@inject NavigationManager navManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private string userName;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+
+
+        var claims = user.Claims;
+        foreach (var claim in claims)
+        {
+            Console.WriteLine($"{claim.Type}: {claim.Value}");
+
+
+        }
+
+        if (user.Identity.IsAuthenticated)
+        {
+            // Retrieve the 'sub' claim (which is typically used for the user identifier or email)
+            var subClaim = user.FindFirst("sub");
+            if (subClaim != null)
+            {
+                userName = subClaim.Value;  // Use the 'sub' claim (email or user identifier)
+            }
+            else
+            {
+                userName = "Name not available in claims";
+            }
+        }
+        else
+        {
+            userName = "Guest";
+        }
+    }
+
+}

@@ -1,0 +1,224 @@
+﻿@page "/booking/index"
+
+
+
+    
+  <div class="side-app">
+					 <!-- CONTAINER -->
+    <div class="main-container" Width="70%">
+        
+						<!-- PAGE-HEADER -->
+						<div class="page-header">
+
+                         </div>
+
+
+
+
+<MudContainer Class="mt-16" MaxWidth="MaxWidth.Large">
+
+        <MudPaper Class="align-md-end">
+            <MudStepper @bind-ActiveIndex="_index" CompletedStepColor="Color.Success" CurrentStepColor="Color.Primary" NavClass="border-b mud-border-lines-default" StepClass="pt-4" ShowResetButton>
+                <TitleTemplate>@*This empty template prevents rendering the title*@</TitleTemplate>
+                <ConnectorTemplate Context="step">
+                    <div class="mud-stepper-nav-connector">
+                        @{
+                            int value = step.Completed ? 100 : 0;
+                            <MudProgressLinear Indeterminate="@(step.IsActive)" Striped Value="value" Min="0" Max="100" Color="Color.Success" Style="height: 2px; background-color: #d4ddeb; border-radius: 2px;" />
+                        }
+                    </div>
+                </ConnectorTemplate>
+                <LabelTemplate>
+                    @if (context.IsActive)
+                    {
+                        <MudIcon Icon="@Icons.Material.Filled.AirplanemodeActive" Style="rotate: 90deg;" Color="context.Completed ? Color.Success : Color.Primary"></MudIcon>
+                    }
+                    else if (context.Completed)
+                    {
+                        <div style="height: 10px; width:10px; background-color: var(--mud-palette-success); border-radius: 50%;"></div>
+                    }
+                    else
+                    {
+                        <div style="height: 10px; width:10px; background-color: #d4ddeb; border-radius: 50%;"></div>
+                    }
+                </LabelTemplate>
+                <ChildContent>
+
+
+
+
+                    <MudStep Title="Verify passenger data">
+                        
+                        Check-in Step 1: Verify passenger data
+                        <MudStack Row Class="justify-space-between mud-width-full">
+
+                        <MudStack Style="width: 300px">
+                           
+                                <MudSelect @bind-Value="_value"
+                                           Variant= "Variant.Outlined"
+                                           Label="Select Departature "
+                                           Margin="_margin"
+                                           Dense="_dense"
+                                           Disabled="_disabled"
+                                           ReadOnly="_readonly"
+                                           Placeholder="@(_placeholder ? "Placeholder" : null)"
+                                           HelperText="@(_helperText ? "Helper Text" : null)"
+                                           HelperTextOnFocus="_helperTextOnFocus"
+                                           Clearable="_clearable">
+                                    @foreach (var state in _states)
+                                    {
+                                        <MudSelectItem Value="state">@state</MudSelectItem>
+                                    }
+                                </MudSelect>
+                           
+                     </MudStack>
+
+
+                       <MudStack Style="width: 300px">
+                           
+                                <MudSelect @bind-Value="_value"
+                                               Variant="Variant.Outlined"
+                                           Label="Select Arrival "
+                                           Margin="_margin"
+                                           Dense="_dense"
+                                           Disabled="_disabled"
+                                           ReadOnly="_readonly"
+                                           Placeholder="@(_placeholder ? "Placeholder" : null)"
+                                           HelperText="@(_helperText ? "Helper Text" : null)"
+                                           HelperTextOnFocus="_helperTextOnFocus"
+                                           Clearable="_clearable">
+                                    @foreach (var state in _states)
+                                    {
+                                        <MudSelectItem Value="state">@state</MudSelectItem>
+                                    }
+                                </MudSelect>
+                           
+                     </MudStack>
+
+
+
+
+
+                                <MudStack Style="width: 300px">
+
+                                    <MudDatePicker Label="Current UI Culture" @bind-Date="_date" Variant="Variant.Outlined"   />
+                                   
+
+                                </MudStack>
+
+
+
+
+                              
+
+    </MudStack>
+
+                            <br /><br />
+                            <MudDivider/>
+      <MudStack Row Class="justify-space-between mud-width-full">
+                            <MudStack Style="width: 300px">
+                                    <MudButton Variant="Variant.Outlined">Default</MudButton>
+                                </MudStack>
+                                <MudStack Style="width: 300px">
+                                    <MudButton Variant="Variant.Outlined" Color="Color.Primary">Primary</MudButton>
+                                </MudStack>
+
+                                <MudStack Style="width: 300px">
+                                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary">Secondary</MudButton>
+                                </MudStack>
+                             
+                         
+                            </MudStack>
+                    
+                    
+                    </MudStep>
+                    <MudStep Title="Upgrade to first class" Skippable="true">Check-in Step 2: Upgrade to first class (optional)</MudStep>
+                    <MudStep Title="Select seat">Check-in Step 3: Select seat</MudStep>
+                    <MudStep Title="Complete check-in" @bind-Completed="_completed">Check-in Final Step: Complete check-in</MudStep>
+                </ChildContent>
+                <CompletedContent>
+                    <MudStack Row Class="ma-3">
+                        <MudIcon Icon="@Icons.Material.Filled.Done" Color="Color.Success" />
+                        <MudText>
+                            You are checked-in, your ticket will be sent by email.
+                        </MudText>
+                    </MudStack>
+                </CompletedContent>
+                <ActionContent Context="stepper">
+                    <MudButton OnClick="@(() => stepper.ResetAsync())">Reset</MudButton>
+                    @if (!_completed)
+                    {
+                        <MudIconButton OnClick="@(() => stepper.PreviousStepAsync())" Icon="@Icons.Material.Filled.ArrowBack" Color="Color.Primary" Disabled="@(_index <= 0)" />
+                        <MudSpacer />
+                        @if (stepper.Steps[_index].Skippable == true)
+                        {
+                            <MudIconButton OnClick="@(() => stepper.SkipCurrentStepAsync())" Icon="@stepper.SkipButtonIcon" Color="Color.Primary" />
+                        }
+                        <MudIconButton OnClick="@(() => stepper.NextStepAsync())" Icon="@Icons.Material.Filled.ArrowForward" Color="Color.Primary" />
+                    }
+                </ActionContent>
+            </MudStepper>
+        </MudPaper>
+
+
+
+        </MudContainer>
+
+
+
+
+
+
+
+
+
+
+
+
+
+							</div>
+							</div>
+						
+@code {
+
+
+    private bool _error;
+    private bool _completed;
+    private bool _disabled;
+
+    private int _index;
+
+
+
+
+    string _value;
+    Margin _margin;
+    bool _dense;
+    bool _readonly;
+    bool _placeholder;
+    bool _helperText;
+    bool _helperTextOnFocus;
+    bool _clearable;
+
+    private DateTime? _date = new DateTime(2021, 02, 14); // 1399-11-26 in Persian calendar
+
+        private DateRange _dateRange = new DateRange(DateTime.Now.Date, DateTime.Now.AddDays(5).Date);
+
+
+     private string[] _states =
+    {
+        "Alabama", "Alaska", "Arizona", "Arkansas", "California",
+        "Colorado", "Connecticut", "Delaware", "Florida", "Georgia",
+        "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas",
+        "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts",
+        "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana",
+        "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico",
+        "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma",
+        "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+        "Tennessee", "Texas", "Utah", "Vermont", "Virginia",
+        "Washington", "West Virginia", "Wisconsin", "Wyoming"
+    };
+
+
+
+}

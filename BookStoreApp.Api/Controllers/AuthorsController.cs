@@ -19,7 +19,7 @@ namespace BookStoreApp.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-   /// [Authorize]
+   [Authorize]
     //[AllowAnonymous]
    
     public class AuthorsController : ControllerBase
